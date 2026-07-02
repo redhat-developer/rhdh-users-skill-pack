@@ -86,7 +86,7 @@ Yes. See [CONTRIBUTING.md](./CONTRIBUTING.md). Proposed skills should help RHDH 
 ### Where do I get help?
 
 - RHDH product documentation: [Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub)
-- Issues and feature requests: [GitHub Issues](https://github.com/redhat-developer/rhdh-users-skill-pack/issues)
+- Issues and feature requests: [JIRA](https://issues.redhat.com/browse/RHIDP)
 
 ## Development
 
