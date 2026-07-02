@@ -7,12 +7,6 @@ Agent Skills for adopting and using [Red Hat Developer Hub](https://developers.r
 
 > **Quick start:** `npx skills add redhat-developer/rhdh-users-skill-pack` — works with [50+ coding agents](https://github.com/vercel-labs/skills#supported-agents).
 
-## What is this?
-
-This repository is a curated pack of [Agent Skills](https://agentskills.io/specification): portable instruction sets that teach AI coding assistants how to work with RHDH. Each skill lives under `skills/<name>/` with a `SKILL.md` file and optional scripts, references, and examples.
-
-Today the pack ships **rhdh-templates** for Software Template authoring and **skill-maker** for creating and auditing Agent Skills. Additional RHDH user skills will land here as separate contributions.
-
 ## What's included
 
 | Skill | Use when you want to… |
