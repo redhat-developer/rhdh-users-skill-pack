@@ -11,13 +11,24 @@ Agent Skills for adopting and using [Red Hat Developer Hub](https://developers.r
 
 This repository is a curated pack of [Agent Skills](https://agentskills.io/specification): portable instruction sets that teach AI coding assistants how to work with RHDH. Each skill lives under `skills/<name>/` with a `SKILL.md` file and optional scripts, references, and examples.
 
-Today the pack ships **skill-maker** — a skill for creating, auditing, and consolidating Agent Skills. Additional RHDH user skills will land here as separate contributions.
+Today the pack ships **rhdh-templates** for Software Template authoring and **skill-maker** for creating and auditing Agent Skills. Additional RHDH user skills will land here as separate contributions.
 
 ## What's included
 
 | Skill | Use when you want to… |
 | ----- | --------------------- |
+| [rhdh-templates](./skills/rhdh-templates/SKILL.md) | Author, validate, and test RHDH Software Templates (Scaffolder) |
 | [skill-maker](./skills/skill-maker/SKILL.md) | Create, audit, and consolidate Agent Skills following the open standard |
+
+### Software Templates (`rhdh-templates`)
+
+Interactive authoring for RHDH Scaffolder templates — templatize an existing repo, create from scratch, fix common gotchas, and validate locally or against a running instance.
+
+Example prompts:
+
+- "Help me turn this Node.js repo into an RHDH Software Template"
+- "Validate my `template.yaml` and fix Scaffolder gotchas"
+- "List scaffolder actions available on my RHDH instance"
 
 ### Agent Skills authoring (`skill-maker`)
 
@@ -35,9 +46,10 @@ Example prompts:
 npx skills add redhat-developer/rhdh-users-skill-pack
 ```
 
-Or install only this skill:
+Or install only one skill:
 
 ```bash
+npx skills add redhat-developer/rhdh-users-skill-pack --skill rhdh-templates
 npx skills add redhat-developer/rhdh-users-skill-pack --skill skill-maker
 ```
 
@@ -67,7 +79,7 @@ npx skills add ./rhdh-users-skill-pack
 
 1. **Install** the pack (see above).
 2. **Open your project** in an agent-enabled editor or CLI.
-3. **Describe your goal in plain language** — for example, "help me write a skill for our RHDH golden paths."
+3. **Describe your goal in plain language** — for example, "help me turn this repo into an RHDH Software Template" or "help me write a skill for our RHDH golden paths."
 
 You can also name the skill explicitly:
 

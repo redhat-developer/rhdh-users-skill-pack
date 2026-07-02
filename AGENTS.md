@@ -68,6 +68,7 @@ If told an implementation was wrong, apply the correction and then record what w
 
 User-facing skills live under `skills/`:
 
+- `rhdh-templates` — Software Templates authoring and validation
 - `skill-maker` — Create, audit, and consolidate Agent Skills
 
 When adding a skill, update [README.md](./README.md) and keep `SKILL.md` `name` aligned with the directory name per the Agent Skills spec.

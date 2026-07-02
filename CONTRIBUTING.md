@@ -8,7 +8,7 @@ This project is released under the Apache-2.0 License.
 
 This pack is for skills that help people **use and extend RHDH**. Skills aimed at Red Hat internal engineering (Jira automation, release trains, internal CI) belong in [`redhat-developer/rhdh-skill`](https://github.com/redhat-developer/rhdh-skill), not here.
 
-The pack currently ships `skill-maker` for authoring new skills. Additional user-facing skills are welcome as focused contributions.
+The pack currently ships `rhdh-templates` for Software Template authoring and `skill-maker` for authoring new skills. Additional user-facing skills are welcome as focused contributions.
 
 ## Get started
 
