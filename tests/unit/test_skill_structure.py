@@ -6,6 +6,34 @@ import pytest
 import yaml
 
 
+class TestRhdhTemplatesSkillMd:
+    """Test that rhdh-templates SKILL.md has required structure."""
+
+    @pytest.fixture
+    def skill_md(self, rhdh_templates_skill_dir):
+        """Load rhdh-templates SKILL.md content."""
+        skill_path = rhdh_templates_skill_dir / "SKILL.md"
+        return skill_path.read_text(encoding="utf-8")
+
+    @pytest.fixture
+    def skill_frontmatter(self, skill_md):
+        """Parse YAML frontmatter from SKILL.md."""
+        match = re.match(r"^---\n(.*?)\n---", skill_md, re.DOTALL)
+        if not match:
+            pytest.fail("SKILL.md missing YAML frontmatter")
+        return yaml.safe_load(match.group(1))
+
+    def test_frontmatter_has_name(self, skill_frontmatter):
+        """SKILL.md must have a name field matching the directory."""
+        assert "name" in skill_frontmatter
+        assert skill_frontmatter["name"] == "rhdh-templates"
+
+    def test_frontmatter_has_description(self, skill_frontmatter):
+        """SKILL.md must have a description field."""
+        assert "description" in skill_frontmatter
+        assert len(skill_frontmatter["description"]) > 20
+
+
 class TestSkillMakerSkillMd:
     """Test that skill-maker SKILL.md has required structure."""
 
@@ -37,7 +65,7 @@ class TestSkillMakerSkillMd:
 class TestUserFacingSkillDirectories:
     """Ensure only expected user-facing skills are present."""
 
-    EXPECTED_SKILLS = {"skill-maker"}
+    EXPECTED_SKILLS = {"rhdh-templates", "skill-maker"}
 
     def test_skill_directories(self, skill_root):
         """skills/ should contain exactly the user-facing skill set."""
