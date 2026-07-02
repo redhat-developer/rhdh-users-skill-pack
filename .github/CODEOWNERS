@@ -1,0 +1,5 @@
+# Default owners for the RHDH Users Skill Pack.
+# Review from a code owner is required before merging pull requests.
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+* @redhat-developer/rhdh-cope
