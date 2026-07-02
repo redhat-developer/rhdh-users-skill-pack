@@ -77,7 +77,7 @@ A folder with a `SKILL.md` file (YAML front matter + instructions) that agents l
 
 ### How is this different from `redhat-developer/rhdh-skill`?
 
-This repository is the **user-facing** skill pack — skills for adopting and operating RHDH. The internal [`rhdh-skill`](https://github.com/redhat-developer/rhdh-skill) repo adds Red Hat engineering workflows (Jira, release management, Extensions Catalog, lifecycle checks, CI tooling) that are not needed for most RHDH users.
+This repository is the **user-facing** skill pack — skills for adopting and operating RHDH. The [`rhdh-skill`](https://github.com/redhat-developer/rhdh-skill) repo adds skills used by the RHDH engineering team (Jira, release management, Extensions Catalog, lifecycle checks, CI tooling) that are not needed for most RHDH users.
 
 ### Can I contribute a new skill?
 

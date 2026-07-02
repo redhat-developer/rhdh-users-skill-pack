@@ -6,9 +6,7 @@ This project is released under the Apache-2.0 License.
 
 ## What belongs in this repository
 
-This pack is for skills that help people **use and extend RHDH**. Skills aimed at Red Hat internal engineering (Jira automation, release trains, internal CI) belong in [`redhat-developer/rhdh-skill`](https://github.com/redhat-developer/rhdh-skill), not here.
-
-The pack currently ships `skill-maker` for authoring new skills. Additional user-facing skills are welcome as focused contributions.
+This pack is for **platform users** — skills that help users adopt, operate, and get value from Red Hat Developer Hub. RHDH Engineering team workflows (Jira automation, release and CI tooling) belong in [`redhat-developer/rhdh-skill`](https://github.com/redhat-developer/rhdh-skill).
 
 ## Get started
 
@@ -59,8 +57,8 @@ Use the bundled `skill-maker` skill to interview, draft, and audit new skills be
 
 ## Reporting issues
 
-Use [GitHub Issues](https://github.com/redhat-developer/rhdh-users-skill-pack/issues) for bugs, missing workflows, and skill ideas. Include your RHDH version, agent tool, and the prompt or task that did not work as expected.
+To report issues against this repository, please use [JIRA](https://issues.redhat.com/browse/RHIDP). Include your RHDH version, agent tool, and the prompt or task that did not work as expected.
 
-## Code of conduct
+## CLAUDE.md
 
-Be respectful and constructive. This is a public Red Hat Developer project intended for a broad community of RHDH users.
+`CLAUDE.md` contains `@AGENTS.md` — a directive that points Claude Code to the canonical file. Edit `AGENTS.md`, not `CLAUDE.md`.
