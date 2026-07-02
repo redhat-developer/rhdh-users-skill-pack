@@ -11,8 +11,6 @@ Agent Skills for adopting and using [Red Hat Developer Hub](https://developers.r
 
 This repository is a curated pack of [Agent Skills](https://agentskills.io/specification): portable instruction sets that teach AI coding assistants how to work with RHDH. Each skill lives under `skills/<name>/` with a `SKILL.md` file and optional scripts, references, and examples.
 
-Today the pack ships **skill-maker** — a skill for creating, auditing, and consolidating Agent Skills. Additional RHDH user skills will land here as separate contributions.
-
 ## What's included
 
 | Skill | Use when you want to… |
