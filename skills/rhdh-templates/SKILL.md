@@ -7,7 +7,7 @@ description: >-
   template", "golden path template", "parameterize skeleton files", "fix template
   gotchas", "validate template", "dry-run template", "list scaffolder actions",
   "explain scaffolder action", "Nunjucks in template", "template best practices",
-  "reference templates", "example templates", "what templates do customers use",
+  "reference templates", "example templates", "what templates are commonly used",
   "Template Editor", or mentions RHDH template
   authoring, Software Catalog templates, or /rhdh-templates commands. Covers setup,
   templatize (highest value), from-scratch create, reference example discovery,
@@ -96,7 +96,7 @@ Command descriptions and argument hints: `scripts/command-metadata.json`
 | 11, "dry-run", "dry run", "test template remotely" | [references/dry-run.md](references/dry-run.md) |
 | 12, "explain-action", "action schema", "parameter schema" | [references/explain-action.md](references/explain-action.md) |
 | 13, "examples", "reference templates", "show me templates", "what templates exist" | [references/example-catalog.md](references/example-catalog.md) |
-| First word doesn't match | Infer from context. "Turn my Spring Boot app into a template" → `templatize`. "Add owner picker to my template" → `add-parameter`. "Does my template validate?" → `validate`. "What templates do customers use?" → `examples`. |
+| First word doesn't match | Infer from context. "Turn my Spring Boot app into a template" → `templatize`. "Add owner picker to my template" → `add-parameter`. "Does my template validate?" → `validate`. "What example templates exist?" → `examples`. |
 
 </routing>
 

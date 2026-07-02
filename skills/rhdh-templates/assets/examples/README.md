@@ -8,7 +8,7 @@ For the full curated catalog of upstream reference templates (official library, 
 python skills/rhdh-templates/scripts/list_examples.py --recommended --json
 ```
 
-See [../references/example-catalog.md](../references/example-catalog.md) for category guide and customer-demand context.
+See [../references/example-catalog.md](../references/example-catalog.md) for category guide and common-demand context.
 
 | Example | Stack | Highlights |
 |---------|-------|------------|

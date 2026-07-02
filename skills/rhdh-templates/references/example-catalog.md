@@ -8,7 +8,7 @@
 
 <process>
 
-Surface curated reference templates customers reach for most often. Use when the user asks "what templates exist?", "show me an example", "what do customers usually build?", or before `create` / `templatize` to pick a study reference.
+Surface curated reference templates teams reach for most often. Use when the user asks "what templates exist?", "show me an example", "what do teams usually build?", or before `create` / `templatize` to pick a study reference.
 
 ## Step 1: Parse intent
 
@@ -70,7 +70,7 @@ Upstream templates in GitHub are **learning aids**, not production-ready golden 
 | AI Lab samples | [ai-lab-template](https://github.com/redhat-ai-dev/ai-lab-template) | Smaller AI samples (RAG, chatbot, codegen) |
 | Bundled skill examples | `assets/examples/` in this skill | Local validation, minimal patterns without cloning repos |
 
-## Categories (customer demand order)
+## Categories (common demand order)
 
 1. **backend** — Go, Node.js, Spring Boot, Quarkus, Python services with CI (most common golden path)
 2. **catalog** — Register existing repos into the Software Catalog
@@ -93,7 +93,7 @@ Templates marked **recommended** upstream (`tags: recommended` in their `templat
 | AI / RAG / agent request | Prefer `ai-quickstart-templates` over generic backend examples |
 | Import-only workflow | Point at `register-component` |
 
-Do not copy upstream skeletons wholesale into customer repos without review — study their **parameter forms**, **step sequences**, and **conventions**, then adapt.
+Do not copy upstream skeletons wholesale into target repos without review — study their **parameter forms**, **step sequences**, and **conventions**, then adapt.
 
 ## Catalog maintenance
 
@@ -101,7 +101,7 @@ Data lives in `assets/example-catalog.json`. Refresh when:
 
 - `templates.yaml` changes in the official library
 - New AI quickstart templates ship
-- Field teams report a recurring customer pattern not yet listed
+- Teams report a recurring pattern not yet listed
 
 Run `list_examples.py --json` after edits to verify parsing.
 

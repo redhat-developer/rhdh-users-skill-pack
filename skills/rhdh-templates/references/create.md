@@ -37,7 +37,7 @@ python <skill-dir>/scripts/list_examples.py \
 
 Present upstream URLs from the matches. When a match includes `local_bundled`, also point at `assets/examples/<name>/` for offline patterns. Ask whether to mirror a reference's step sequence or start from `assets/examples/minimal-template/`.
 
-Load `example-catalog.md` when the user asks what customers typically build.
+Load `example-catalog.md` when the user asks what templates teams typically build.
 
 ## Step 2: Ensure layout
 
