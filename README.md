@@ -1,5 +1,5 @@
 > [!WARNING]
-> **Work in Progress:** This project is under development. Things might break, and documentation may be incomplete.
+> **Work in Progress:** This project is under development.
 
 # RHDH Users Skill Pack
 
