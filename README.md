@@ -12,6 +12,39 @@ Agent Skills for adopting and using [Red Hat Developer Hub](https://developers.r
 | Skill | Use when you want to… |
 | ----- | --------------------- |
 | [skill-maker](./skills/skill-maker/SKILL.md) | Create, audit, and consolidate Agent Skills following the open standard |
+| [upgrade-helper](./skills/upgrade-helper/SKILL.md) | Prepare for an RHDH upgrade — analyzes your config files against a target release and produces a personalized migration plan |
+
+### Upgrade assessment (`upgrade-helper`)
+
+Analyzes your RHDH configuration against a target release and produces a personalized migration plan — showing exactly what affects your setup and what doesn't. Works with Helm, Operator, and rhdh-local deployments.
+
+**What it does:**
+- Resolves OCI references for every plugin via overlay repo workspace metadata
+- Validates existing OCI plugin tags against the target release
+- Searches RHDHBUGS Jira per-plugin for known bugs affecting your versions
+- Filters breaking changes into "Affects You" vs "Does NOT Affect You"
+- Computes a 0-100 Readiness Score with transparent breakdown
+- Includes bundled release notes for RHDH 1.4–1.10
+
+**How to invoke:**
+```bash
+# With a .upgrade-helper.yaml config file (recommended for repeat use)
+/upgrade-helper
+
+# With individual files
+/upgrade-helper --from 1.8 --to 1.10 --config ./values.yaml --config ./app-config.yaml
+
+# With a config directory
+/upgrade-helper --to 1.10 --config-path ./my-configs/
+
+# With an rhdh-local project (auto-discovers configs, version, env vars)
+/upgrade-helper --to 1.10 --config-path ./rhdh-local/
+
+# Interactive (no config files)
+/upgrade-helper --to 1.10
+```
+
+Run `/upgrade-helper --help` for full documentation.
 
 ### Agent Skills authoring (`skill-maker`)
 
