@@ -70,5 +70,6 @@ User-facing skills live under `skills/`:
 
 - `rhdh-templates` — Software Templates authoring and validation
 - `skill-maker` — Create, audit, and consolidate Agent Skills
+- `upgrade-helper` — Upgrade assessment for RHDH — analyzes config files against a target release to produce a prioritized migration plan with readiness scoring
 
 When adding a skill, update [README.md](./README.md) and keep `SKILL.md` `name` aligned with the directory name per the Agent Skills spec.
