@@ -1,6 +1,3 @@
-> [!WARNING]
-> **Work in Progress:** This project is under development. Things might break, and documentation may be incomplete.
-
 # RHDH Users Skill Pack
 
 Agent Skills for adopting and using [Red Hat Developer Hub](https://developers.redhat.com/products/rhdh/overview) (RHDH) effectively.
@@ -11,42 +8,24 @@ Agent Skills for adopting and using [Red Hat Developer Hub](https://developers.r
 
 | Skill | Use when you want to… |
 | ----- | --------------------- |
+| [rhdh-templates](./skills/rhdh-templates/SKILL.md) | Author and validate RHDH Software Templates with AI-guided workflows |
+| [rhdh-upgrade-helper](./skills/rhdh-upgrade-helper/SKILL.md) | Prepare for an RHDH upgrade — resolves OCI plugin references, validates tags, searches RHDHBUGS Jira for known bugs, filters breaking changes by your config, and computes a 0–100 Readiness Score |
 | [skill-maker](./skills/skill-maker/SKILL.md) | Create, audit, and consolidate Agent Skills following the open standard |
-| [rhdh-upgrade-helper](./skills/rhdh-upgrade-helper/SKILL.md) | Prepare for an RHDH upgrade — analyzes your config files against a target release and produces a personalized migration plan |
 
 ### Upgrade assessment (`rhdh-upgrade-helper`)
 
 Analyzes your RHDH configuration against a target release and produces a personalized migration plan — showing exactly what affects your setup and what doesn't. Works with Helm, Operator, and rhdh-local deployments.
 
-**What it does:**
+- **[rhdh-upgrade-helper](./skills/rhdh-upgrade-helper/SKILL.md)** — Upgrade assessment for RHDH. Resolves OCI references for every plugin via the `rhdh-plugin-export-overlays` overlay repo workspace metadata and validates existing OCI plugin tags against the target release. Searches the RHDHBUGS Jira project per-plugin for known bugs affecting your versions. Filters breaking changes into "Affects You" vs "Does NOT Affect You" based on your actual config. Computes a 0–100 Readiness Score with transparent breakdown. Bundled release notes for RHDH 1.4–1.10. Workflows:
+  - **[full-report](./skills/rhdh-upgrade-helper/workflows/full-report.md)** — Generate a complete upgrade report from config files or a `.rhdh-upgrade-helper.yaml`.
+  - **[interactive](./skills/rhdh-upgrade-helper/workflows/interactive.md)** — Guided assessment when no config files are available.
+  - **[help](./skills/rhdh-upgrade-helper/workflows/help.md)** — Show usage, arguments, and examples.
 
-- Resolves OCI references for every plugin via overlay repo workspace metadata
-- Validates existing OCI plugin tags against the target release
-- Searches RHDHBUGS Jira per-plugin for known bugs affecting your versions
-- Filters breaking changes into "Affects You" vs "Does NOT Affect You"
-- Computes a 0-100 Readiness Score with transparent breakdown
-- Includes bundled release notes for RHDH 1.4–1.10
+Example prompts:
 
-**How to invoke:**
-
-```bash
-# With a .rhdh-upgrade-helper.yaml config file (recommended for repeat use)
-/rhdh-upgrade-helper
-
-# With individual files
-/rhdh-upgrade-helper --from 1.8 --to 1.10 --config ./values.yaml --config ./app-config.yaml
-
-# With a config directory
-/rhdh-upgrade-helper --to 1.10 --config-path ./my-configs/
-
-# With an rhdh-local project (auto-discovers configs, version, env vars)
-/rhdh-upgrade-helper --to 1.10 --config-path ./rhdh-local/
-
-# Interactive (no config files)
-/rhdh-upgrade-helper --to 1.10
-```
-
-Run `/rhdh-upgrade-helper --help` for full documentation.
+- "Analyze my values.yaml for upgrading from RHDH 1.8 to 1.10"
+- "What breaks if I upgrade to RHDH 1.10?"
+- "Run an upgrade assessment on my rhdh-local project"
 
 ### Software Templates (`rhdh-templates`)
 
@@ -76,6 +55,11 @@ Example prompts:
 ### Agent Skills authoring (`skill-maker`)
 
 Create, audit, or consolidate [Agent Skills](https://agentskills.io/specification) — useful when packaging your own RHDH workflows or contributing skills to this pack.
+
+- **[skill-maker](./skills/skill-maker/SKILL.md)** — Interviews the user about intent, scope, and edge cases before drafting. Covers SKILL.md structure, frontmatter, progressive disclosure, description optimization, script bundling, sub-command architecture, and review. Capabilities:
+  - **Create** — Guided interview and drafting of a new skill from scratch.
+  - **Audit** — Review, improve, or debug an existing SKILL.md (trigger issues, structure, description).
+  - **[Consolidate](./skills/skill-maker/references/consolidation-guide.md)** — Merge multiple skills into fewer using router patterns.
 
 Example prompts:
 
@@ -148,7 +132,7 @@ Yes. See [CONTRIBUTING.md](./CONTRIBUTING.md). Proposed skills should help RHDH 
 ### Where do I get help?
 
 - RHDH product documentation: [Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub)
-- Issues and feature requests: [GitHub Issues](https://github.com/redhat-developer/rhdh-users-skill-pack/issues)
+- Issues and feature requests: [JIRA (RHIDP)](https://issues.redhat.com/browse/RHIDP)
 
 ## Development
 
