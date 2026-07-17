@@ -9,9 +9,35 @@ Agent Skills for adopting and using [Red Hat Developer Hub](https://developers.r
 
 ## What's included
 
-| Skill | Use when you want to… |
-| ----- | --------------------- |
-| [skill-maker](./skills/skill-maker/SKILL.md) | Create, audit, and consolidate Agent Skills following the open standard |
+| Skill                                              | Use when you want to…                                                   |
+| -------------------------------------------------- | ----------------------------------------------------------------------- |
+| [rhdh-templates](./skills/rhdh-templates/SKILL.md) | Author, validate, and test RHDH Software Templates (Scaffolder)         |
+| [skill-maker](./skills/skill-maker/SKILL.md)       | Create, audit, and consolidate Agent Skills following the open standard |
+
+### Software Templates (`rhdh-templates`)
+
+Interactive authoring for RHDH Scaffolder templates — templatize an existing repo, create from scratch, fix common gotchas, and validate locally or against a running instance.
+
+- **[rhdh-templates](./skills/rhdh-templates/SKILL.md)** — Interactive authoring and validation for Software Templates. Includes curated reference catalog (official library + AI quickstarts), worked examples (`nodejs-backend`, `java-springboot`) and bundled JSON Schema validation. Sub-commands:
+  - **[init](./skills/rhdh-templates/references/init.md)** — Check tooling, scaffold template repo layout, optional RHDH connectivity.
+  - **[templatize](./skills/rhdh-templates/references/templatize.md)** — Convert existing codebase into a parameterized template.
+  - **[create](./skills/rhdh-templates/references/create.md)** — Guided from-scratch template authoring when no reference code exists.
+  - **[add-parameter](./skills/rhdh-templates/references/add-parameter.md)** — Add a parameter or parameter group to existing `template.yaml`.
+  - **[add-step](./skills/rhdh-templates/references/add-step.md)** — Add a scaffolder step to existing `template.yaml`.
+  - **[add-skeleton](./skills/rhdh-templates/references/add-skeleton.md)** — Add or parameterize skeleton files with Nunjucks.
+  - **[create-location](./skills/rhdh-templates/references/create-location.md)** — Generate or update root `location.yaml` for catalog registration.
+  - **[fix-gotchas](./skills/rhdh-templates/references/fix-gotchas.md)** — Auto-fix common RHDH template mistakes (raw/endraw blocks, catalog-info path, etc.).
+  - **[validate](./skills/rhdh-templates/references/validate.md)** — Local YAML schema, gotcha validation, and optional Nunjucks lint via `--lint-skeleton` (no RHDH required).
+  - **[list-actions](./skills/rhdh-templates/references/list-actions.md)** — List available Scaffolder actions from a running RHDH instance.
+  - **[dry-run](./skills/rhdh-templates/references/dry-run.md)** — Test template execution via Scaffolder v2 dry-run API.
+  - **[explain-action](./skills/rhdh-templates/references/explain-action.md)** — Show action input schema or template parameter schema.
+  - **[example-catalog](./skills/rhdh-templates/references/example-catalog.md)** — Browse curated reference templates (official library, AI quickstarts, bundled).
+
+Example prompts:
+
+- "Help me turn this Node.js repo into an RHDH Software Template"
+- "Validate my `template.yaml` and fix Scaffolder gotchas"
+- "List scaffolder actions available on my RHDH instance"
 
 ### Agent Skills authoring (`skill-maker`)
 
@@ -29,9 +55,10 @@ Example prompts:
 npx skills add redhat-developer/rhdh-users-skill-pack
 ```
 
-Or install only this skill:
+Or install only one skill:
 
 ```bash
+npx skills add redhat-developer/rhdh-users-skill-pack --skill rhdh-templates
 npx skills add redhat-developer/rhdh-users-skill-pack --skill skill-maker
 ```
 
@@ -61,11 +88,12 @@ npx skills add ./rhdh-users-skill-pack
 
 1. **Install** the pack (see above).
 2. **Open your project** in an agent-enabled editor or CLI.
-3. **Describe your goal in plain language** — for example, "help me write a skill for our RHDH golden paths."
+3. **Describe your goal in plain language** — for example, "help me turn this repo into an RHDH Software Template."
 
 You can also name the skill explicitly:
 
 ```
+Use the rhdh-templates skill to validate my template.yaml
 Use the skill-maker skill to audit my SKILL.md
 ```
 

@@ -12,6 +12,7 @@ requires-python = ">=3.10"
 dev = [
     "pytest>=9.0.3",
     "pyyaml>=6.0",  # SKILL.md structure tests
+    "jsonschema>=4.0",
     "ruff>=0.4.0",
 ]
 

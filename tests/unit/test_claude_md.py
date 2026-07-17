@@ -50,4 +50,5 @@ class TestAgentsMdStructure:
     def test_has_available_skills_section(self, agents_md):
         """AGENTS.md should list user-facing skills."""
         assert "## Available skills" in agents_md
+        assert "rhdh-templates" in agents_md
         assert "skill-maker" in agents_md
