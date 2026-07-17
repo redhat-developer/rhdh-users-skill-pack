@@ -3,7 +3,7 @@
 <required_reading>
 Read these references before proceeding:
 - `references/secrets-detection.md` — secret scanning patterns (read FIRST)
-- `references/upgrade-helper-config.md` — .upgrade-helper.yaml format and resolution order
+- `references/rhdh-upgrade-helper-config.md` — .rhdh-upgrade-helper.yaml format and resolution order
 - `references/config-scoring.md` — readiness scoring model
 - `references/output-format.md` — customer-facing report template
 - `references/rhdh-local.md` — RHDH Local detection and recommendation
@@ -28,32 +28,32 @@ Template variable references (`${VAR}`, `{{ .Values.x }}`) are NOT secrets — s
 
 ## Step 1: Resolve Config Files and Parse Input
 
-Resolve config files following the order defined in `references/upgrade-helper-config.md`. Each source **extends** the file list (not replaces):
+Resolve config files following the order defined in `references/rhdh-upgrade-helper-config.md`. Each source **extends** the file list (not replaces):
 
-### 1a: Check for `.upgrade-helper.yaml`
+### 1a: Check for `.rhdh-upgrade-helper.yaml`
 
-Look for `.upgrade-helper.yaml` in the current working directory first, then in the `--config-path` directory if provided:
+Look for `.rhdh-upgrade-helper.yaml` in the current working directory first, then in the `--config-path` directory if provided:
 
 ```bash
 # Check cwd
-Read .upgrade-helper.yaml  # if exists
+Read .rhdh-upgrade-helper.yaml  # if exists
 
 # Check --config-path directory
-Read {config_path}/.upgrade-helper.yaml  # if exists and cwd check failed
+Read {config_path}/.rhdh-upgrade-helper.yaml  # if exists and cwd check failed
 ```
 
 If found, extract:
-- `configs` list → add each path to the resolved file list (resolve relative paths from the `.upgrade-helper.yaml` location)
+- `configs` list → add each path to the resolved file list (resolve relative paths from the `.rhdh-upgrade-helper.yaml` location)
 - `from` → use as `rhdh_from_release` if `--from` not in CLI args
 - `release` → use as `rhdh_to` if `--to` not in CLI args
 
 ### 1b: Process CLI arguments
 
 Extract from $ARGUMENTS:
-- `rhdh_to`: from `--to X.Y` (overrides `.upgrade-helper.yaml`)
-- `rhdh_from_release`: from `--from X.Y` (overrides `.upgrade-helper.yaml`), defaults to release immediately before `--to`
+- `rhdh_to`: from `--to X.Y` (overrides `.rhdh-upgrade-helper.yaml`)
+- `rhdh_from_release`: from `--from X.Y` (overrides `.rhdh-upgrade-helper.yaml`), defaults to release immediately before `--to`
 - `--config /path/to/file`: add each file to the resolved file list (may appear multiple times)
-- `--config-path /dir`: if provided and no `.upgrade-helper.yaml` found, scan directory for config files per `references/config-analysis.md` File Discovery
+- `--config-path /dir`: if provided and no `.rhdh-upgrade-helper.yaml` found, scan directory for config files per `references/config-analysis.md` File Discovery
 
 ### 1c: Confirm resolved files
 
@@ -62,13 +62,13 @@ Before proceeding, show the user what was found and confirm:
 1. List all resolved config files with their auto-detected type (Helm values, app-config, dynamic-plugins, Backstage CR)
 2. Ask: **"Are there additional config files in other locations? (e.g., a separate app-config or dynamic-plugins ConfigMap)"**
 3. If yes, collect more paths until the user says "done"
-4. If using `.upgrade-helper.yaml`, suggest updating it with the additional paths for future runs
+4. If using `.rhdh-upgrade-helper.yaml`, suggest updating it with the additional paths for future runs
 
-Skip this confirmation only when the files came from a `.upgrade-helper.yaml` (the user already curated the list).
+Skip this confirmation only when the files came from a `.rhdh-upgrade-helper.yaml` (the user already curated the list).
 
 ### 1d: Validate
 
-- `--to` is required (from CLI or `.upgrade-helper.yaml`). If missing, prompt: "What RHDH version are you upgrading to? (e.g., --to 1.10)"
+- `--to` is required (from CLI or `.rhdh-upgrade-helper.yaml`). If missing, prompt: "What RHDH version are you upgrading to? (e.g., --to 1.10)"
 - If config files were resolved from any source, proceed with config-driven analysis
 - If `$ENVIRONMENT_PROFILE` was passed from `workflows/interactive.md`, use that instead of config files
 - If no config files and no environment profile, route to `workflows/interactive.md`

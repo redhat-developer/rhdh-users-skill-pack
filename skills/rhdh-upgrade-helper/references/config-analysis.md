@@ -1,6 +1,6 @@
 # Config Analysis: Customer Configuration Parsing
 
-This reference defines how to parse customer configuration files and produce actionable migration findings. Config files can come from `.upgrade-helper.yaml`, `--config` flags, `--config-path` directory scan, or the interactive workflow. See `references/upgrade-helper-config.md` for input resolution order.
+This reference defines how to parse customer configuration files and produce actionable migration findings. Config files can come from `.rhdh-upgrade-helper.yaml`, `--config` flags, `--config-path` directory scan, or the interactive workflow. See `references/rhdh-upgrade-helper-config.md` for input resolution order.
 
 ## File Discovery
 
@@ -31,7 +31,7 @@ If `compose.yaml` and `configs/` subdirectory both exist, treat this as an **rhd
 
 This means an rhdh-local user can simply run:
 ```
-/upgrade-helper --config-path ./rhdh-local/
+/rhdh-upgrade-helper --config-path ./rhdh-local/
 ```
 and the skill discovers everything automatically — version, configs, env vars.
 
@@ -48,7 +48,7 @@ When the directory is NOT an rhdh-local project, scan for these file patterns:
 | `*.env`, `.env*` | `.env`, `.env.local`, `env.sh` |
 | `backstage*.yaml` (with `kind: Backstage`) | `backstage-cr.yaml` |
 
-### When files are provided individually (`--config` or `.upgrade-helper.yaml`)
+### When files are provided individually (`--config` or `.rhdh-upgrade-helper.yaml`)
 
 Do NOT rely on filename — auto-detect the type from content.
 
@@ -87,7 +87,7 @@ Report findings against the **source file** where the final value comes from (no
 When a compose file is detected (rhdh-local or standalone), extract:
 
 - `RHDH_IMAGE` default value → parse the tag to determine the RHDH version (e.g., `quay.io/rhdh-community/rhdh:1.10` → `1.10`)
-- Use as `rhdh_to` if not provided via CLI args or `.upgrade-helper.yaml`
+- Use as `rhdh_to` if not provided via CLI args or `.rhdh-upgrade-helper.yaml`
 - Set `environment.deployment_method` to `local`
 
 Also check for `CATALOG_INDEX_IMAGE` in compose env or `default.env` for the catalog index version.

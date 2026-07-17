@@ -37,7 +37,7 @@ class TestSkillMakerSkillMd:
 class TestUserFacingSkillDirectories:
     """Ensure only expected user-facing skills are present."""
 
-    EXPECTED_SKILLS = {"skill-maker", "upgrade-helper"}
+    EXPECTED_SKILLS = {"skill-maker", "rhdh-upgrade-helper"}
 
     def test_skill_directories(self, skill_root):
         """skills/ should contain exactly the user-facing skill set."""

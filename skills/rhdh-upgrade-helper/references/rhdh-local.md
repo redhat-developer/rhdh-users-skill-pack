@@ -6,10 +6,10 @@ RHDH Local lets customers test their configuration changes locally using `podman
 
 ## Direct Analysis of RHDH Local Projects
 
-The upgrade-helper skill can analyze an rhdh-local project directory directly:
+The rhdh-upgrade-helper skill can analyze an rhdh-local project directory directly:
 
 ```
-/upgrade-helper --to 1.10 --config-path ./rhdh-local/
+/rhdh-upgrade-helper --to 1.10 --config-path ./rhdh-local/
 ```
 
 When the skill detects an rhdh-local project structure (`compose.yaml` + `configs/` directory), it:

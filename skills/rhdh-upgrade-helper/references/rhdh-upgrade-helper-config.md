@@ -1,4 +1,4 @@
-# .upgrade-helper.yaml Config File
+# .rhdh-upgrade-helper.yaml Config File
 
 A config file that pre-sets file paths and release versions so you don't re-type flags on every run.
 
@@ -15,14 +15,14 @@ configs:
 ```
 
 - `from` and `release` are optional — CLI args (`--from`, `--to`) take precedence
-- `configs` is a list of file paths, relative to the `.upgrade-helper.yaml` file location
+- `configs` is a list of file paths, relative to the `.rhdh-upgrade-helper.yaml` file location
 - File type is auto-detected from content, not filename — see "File Type Auto-Detection" below
 
 ## Discovery Order
 
 The skill resolves config files in this order. Later sources **extend** earlier ones (not replace):
 
-1. **`.upgrade-helper.yaml`** — check current working directory first, then `--config-path` directory
+1. **`.rhdh-upgrade-helper.yaml`** — check current working directory first, then `--config-path` directory
 2. **`--config` flags** — individual file paths from CLI args (extend the list from step 1)
 3. **`--config-path` directory scan** — scan directory for known file patterns (existing behavior)
 4. **Interactive fallback** — if no config files found, ask the user for file paths
@@ -52,7 +52,7 @@ Backstage CR files are parsed for environment facts only:
 ### Helm deployment with separate configs
 
 ```yaml
-# .upgrade-helper.yaml
+# .rhdh-upgrade-helper.yaml
 from: "1.9"
 to: "1.10"
 configs:
@@ -64,7 +64,7 @@ configs:
 ### Operator deployment
 
 ```yaml
-# .upgrade-helper.yaml
+# .rhdh-upgrade-helper.yaml
 from: "1.9"
 to: "1.10"
 configs:
@@ -77,9 +77,9 @@ configs:
 ### Minimal (just release versions, files via CLI)
 
 ```yaml
-# .upgrade-helper.yaml
+# .rhdh-upgrade-helper.yaml
 from: "1.8"
 to: "1.10"
 ```
 
-Then run: `/upgrade-helper --config ./values.yaml --config ./app-config.yaml`
+Then run: `/rhdh-upgrade-helper --config ./values.yaml --config ./app-config.yaml`

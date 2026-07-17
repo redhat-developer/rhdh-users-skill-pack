@@ -12,9 +12,9 @@ Agent Skills for adopting and using [Red Hat Developer Hub](https://developers.r
 | Skill | Use when you want to… |
 | ----- | --------------------- |
 | [skill-maker](./skills/skill-maker/SKILL.md) | Create, audit, and consolidate Agent Skills following the open standard |
-| [upgrade-helper](./skills/upgrade-helper/SKILL.md) | Prepare for an RHDH upgrade — analyzes your config files against a target release and produces a personalized migration plan |
+| [rhdh-upgrade-helper](./skills/rhdh-upgrade-helper/SKILL.md) | Prepare for an RHDH upgrade — analyzes your config files against a target release and produces a personalized migration plan |
 
-### Upgrade assessment (`upgrade-helper`)
+### Upgrade assessment (`rhdh-upgrade-helper`)
 
 Analyzes your RHDH configuration against a target release and produces a personalized migration plan — showing exactly what affects your setup and what doesn't. Works with Helm, Operator, and rhdh-local deployments.
 
@@ -28,23 +28,23 @@ Analyzes your RHDH configuration against a target release and produces a persona
 
 **How to invoke:**
 ```bash
-# With a .upgrade-helper.yaml config file (recommended for repeat use)
-/upgrade-helper
+# With a .rhdh-upgrade-helper.yaml config file (recommended for repeat use)
+/rhdh-upgrade-helper
 
 # With individual files
-/upgrade-helper --from 1.8 --to 1.10 --config ./values.yaml --config ./app-config.yaml
+/rhdh-upgrade-helper --from 1.8 --to 1.10 --config ./values.yaml --config ./app-config.yaml
 
 # With a config directory
-/upgrade-helper --to 1.10 --config-path ./my-configs/
+/rhdh-upgrade-helper --to 1.10 --config-path ./my-configs/
 
 # With an rhdh-local project (auto-discovers configs, version, env vars)
-/upgrade-helper --to 1.10 --config-path ./rhdh-local/
+/rhdh-upgrade-helper --to 1.10 --config-path ./rhdh-local/
 
 # Interactive (no config files)
-/upgrade-helper --to 1.10
+/rhdh-upgrade-helper --to 1.10
 ```
 
-Run `/upgrade-helper --help` for full documentation.
+Run `/rhdh-upgrade-helper --help` for full documentation.
 
 ### Agent Skills authoring (`skill-maker`)
 
