@@ -26,7 +26,7 @@ Follow `references/intake-questions.md` exactly. The flow prioritizes config fil
 - If yes, collect more paths until the user says "done" or "that's all"
 - If the user provided a directory path instead of individual files, scan it, show what was found, and still ask if there are more
 - Once confirmed, switch to config-driven analysis. Skip Q4–Q7 — auth, SCM, plugins, and features are extracted from the files automatically. Proceed to Step 4.
-- **Tip:** Suggest creating a `.upgrade-helper.yaml` to save the file paths for future runs. See `references/upgrade-helper-config.md`.
+- **Tip:** Suggest creating a `.rhdh-upgrade-helper.yaml` to save the file paths for future runs. See `references/rhdh-upgrade-helper-config.md`.
 
 **If no config files ("skip") → continue with manual questions:**
 

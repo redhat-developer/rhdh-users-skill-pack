@@ -1,5 +1,5 @@
 ---
-name: upgrade-helper
+name: rhdh-upgrade-helper
 description: Customer-facing upgrade assessment for RHDH. Analyzes your configuration files (or asks about your environment) against a target RHDH release to produce a concrete migration plan with readiness scoring. Use when upgrading RHDH, planning a migration, checking what breaks in a new version, assessing upgrade impact, or asking "can I upgrade to X.Y", "what changed between versions", "migration guide", "upgrade checklist", "is my config compatible". No Jira access or Red Hat subscription required.
 ---
 
@@ -10,11 +10,11 @@ Help RHDH customers prepare for an upgrade by correlating their actual configura
 <quick_start>
 Invoke with:
 
-- Config file:      `/upgrade-helper` (reads `.upgrade-helper.yaml` from cwd)
-- Individual files: `/upgrade-helper --to 1.10 --config ./values.yaml --config ./app-config.yaml`
-- Directory:        `/upgrade-helper --to 1.10 --config-path ./my-configs/`
-- Interactive:      `/upgrade-helper --to 1.10`
-- Skip-release:     `/upgrade-helper --from 1.8 --to 1.10 --config ./values.yaml`
+- Config file:      `/rhdh-upgrade-helper` (reads `.rhdh-upgrade-helper.yaml` from cwd)
+- Individual files: `/rhdh-upgrade-helper --to 1.10 --config ./values.yaml --config ./app-config.yaml`
+- Directory:        `/rhdh-upgrade-helper --to 1.10 --config-path ./my-configs/`
+- Interactive:      `/rhdh-upgrade-helper --to 1.10`
+- Skip-release:     `/rhdh-upgrade-helper --from 1.8 --to 1.10 --config ./values.yaml`
 
 Arguments: `[--to X.Y] [--from X.Y] [--config /path/to/file] [--config-path /dir]`
 
@@ -22,7 +22,7 @@ Arguments: `[--to X.Y] [--from X.Y] [--config /path/to/file] [--config-path /dir
 - **--from X.Y** (optional): Source RHDH release version upgrading FROM. Defaults to the release immediately before `--to`. Use when skipping releases (e.g., `--from 1.8 --to 1.10`).
 - **--config /path/to/file** (optional, repeatable): Path to an individual config file. Can be specified multiple times. Accepts `values.yaml`, `app-config.yaml`, `dynamic-plugins.yaml`, Backstage CR, or any YAML with RHDH configuration. File type is auto-detected from content.
 - **--config-path /dir** (optional): Path to a directory to scan for config files. When provided, scans for known file patterns. Can be combined with `--config` for additional files.
-- When no config source is given, the skill checks for `.upgrade-helper.yaml` in the current directory. If not found, it asks intake questions to build your environment profile. See `references/upgrade-helper-config.md`.
+- When no config source is given, the skill checks for `.rhdh-upgrade-helper.yaml` in the current directory. If not found, it asks intake questions to build your environment profile. See `references/rhdh-upgrade-helper-config.md`.
 </quick_start>
 
 <context>
@@ -38,11 +38,11 @@ The skill correlates these to answer: "Of all the changes in the target release,
 
 ### Config file
 
-When a `.upgrade-helper.yaml` file exists in the current directory (or in `--config-path`), the skill reads file paths and release versions from it. This avoids re-typing flags on repeat runs. See `references/upgrade-helper-config.md`.
+When a `.rhdh-upgrade-helper.yaml` file exists in the current directory (or in `--config-path`), the skill reads file paths and release versions from it. This avoids re-typing flags on repeat runs. See `references/rhdh-upgrade-helper-config.md`.
 
 ### Config analysis
 
-When config files are provided (via `.upgrade-helper.yaml`, `--config`, or `--config-path`), parsing follows `references/config-analysis.md`. File type is auto-detected from content — supports Helm values, app-config, dynamic-plugins config, Backstage CR, and `.env` files.
+When config files are provided (via `.rhdh-upgrade-helper.yaml`, `--config`, or `--config-path`), parsing follows `references/config-analysis.md`. File type is auto-detected from content — supports Helm values, app-config, dynamic-plugins config, Backstage CR, and `.env` files.
 
 ### Security
 
@@ -52,11 +52,11 @@ All config files are scanned for embedded secrets before processing. See `refere
 <routing>
 | Condition | Workflow |
 |-----------|----------|
-| Config files resolved (via `.upgrade-helper.yaml`, `--config`, or `--config-path`) | `workflows/full-report.md` (config-driven assessment) |
+| Config files resolved (via `.rhdh-upgrade-helper.yaml`, `--config`, or `--config-path`) | `workflows/full-report.md` (config-driven assessment) |
 | No config files resolved | `workflows/interactive.md` (ask intake questions, then assess) |
 | "help", "explain", "how" | `workflows/help.md` |
 
-**`--to` is always required.** If omitted, prompt for it before routing. `.upgrade-helper.yaml` may provide it.
+**`--to` is always required.** If omitted, prompt for it before routing. `.rhdh-upgrade-helper.yaml` may provide it.
 **When no config files are resolved, always route to `workflows/interactive.md` — never produce a generic report without gathering environment context first.**
 </routing>
 
@@ -70,7 +70,7 @@ All config files are scanned for embedded secrets before processing. See `refere
 | `references/secrets-detection.md` | Secret patterns to scan for before processing config files. Template refs are safe; literal secrets are flagged. |
 | `references/rhdh-local.md` | RHDH Local detection and recommendation for safe pre-upgrade testing. |
 | `references/env-vars.md` | Known RHDH environment variables that affect upgrade behavior. |
-| `references/upgrade-helper-config.md` | `.upgrade-helper.yaml` format, resolution order, file type auto-detection, Helm and Operator examples. |
+| `references/rhdh-upgrade-helper-config.md` | `.rhdh-upgrade-helper.yaml` format, resolution order, file type auto-detection, Helm and Operator examples. |
 | `references/config-analysis.md` | How to parse customer config files — content-based auto-detection for Helm values, app-config, dynamic-plugins, and Backstage CR. |
 | `references/rhdh-architecture.md` | RHDH architecture context — what actually breaks on upgrade vs. common false positives. |
 | `references/release-notes/{X.Y}.md` | Per-release notes (new features, breaking changes, deprecated/removed features, known issues). One file per release. |

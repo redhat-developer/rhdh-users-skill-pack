@@ -25,7 +25,7 @@ Then ask Claude to convert it:
 
 ```
 Convert raw.txt to a release notes markdown file matching the format in
-skills/upgrade-helper/references/release-notes/1.10.md
+skills/rhdh-upgrade-helper/references/release-notes/1.10.md
 ```
 
 Claude strips the navigation boilerplate and structures it into the required sections.

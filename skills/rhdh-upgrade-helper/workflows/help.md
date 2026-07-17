@@ -1,10 +1,10 @@
 # Workflow: Help
 
-Explain the upgrade-helper skill to the user. No data sources needed.
+Explain the rhdh-upgrade-helper skill to the user. No data sources needed.
 
 ## Response
 
-**upgrade-helper** analyzes your RHDH configuration against a target release and produces a personalized migration plan — showing exactly what affects your setup and what doesn't.
+**rhdh-upgrade-helper** analyzes your RHDH configuration against a target release and produces a personalized migration plan — showing exactly what affects your setup and what doesn't.
 
 ### What it does
 
@@ -22,7 +22,7 @@ Explain the upgrade-helper skill to the user. No data sources needed.
 ### How to invoke
 
 **With a config file (recommended for repeat use):**
-Create a `.upgrade-helper.yaml` in your working directory:
+Create a `.rhdh-upgrade-helper.yaml` in your working directory:
 
 ```yaml
 from: "1.8"
@@ -36,7 +36,7 @@ configs:
 Then run:
 
 ```
-/upgrade-helper
+/rhdh-upgrade-helper
 ```
 
 The skill reads file paths and release versions from this file. No flags needed.
@@ -44,7 +44,7 @@ The skill reads file paths and release versions from this file. No flags needed.
 **With individual files:**
 
 ```
-/upgrade-helper --to 1.10 --config ./values.yaml --config ./app-config.yaml
+/rhdh-upgrade-helper --to 1.10 --config ./values.yaml --config ./app-config.yaml
 ```
 
 `--config` can be specified multiple times. File type is auto-detected from content.
@@ -52,7 +52,7 @@ The skill reads file paths and release versions from this file. No flags needed.
 **With a config directory:**
 
 ```
-/upgrade-helper --to 1.10 --config-path ./my-configs/
+/rhdh-upgrade-helper --to 1.10 --config-path ./my-configs/
 ```
 
 Scans the directory for known file patterns (`values*.yaml`, `app-config*.yaml`, `dynamic-plugins*.yaml`, `.env`).
@@ -60,7 +60,7 @@ Scans the directory for known file patterns (`values*.yaml`, `app-config*.yaml`,
 **With an rhdh-local project:**
 
 ```
-/upgrade-helper --to 1.10 --config-path ./rhdh-local/
+/rhdh-upgrade-helper --to 1.10 --config-path ./rhdh-local/
 ```
 
 Auto-detects the rhdh-local project structure, discovers all configs in `configs/app-config/` and `configs/dynamic-plugins/`, reads the current version from `compose.yaml` / `.env`, and merges multiple app-config files automatically.
@@ -68,7 +68,7 @@ Auto-detects the rhdh-local project structure, discovers all configs in `configs
 **Interactive (no config files):**
 
 ```
-/upgrade-helper --to 1.10
+/rhdh-upgrade-helper --to 1.10
 ```
 
 Asks your current version, deployment method, then asks for config file paths. If you don't have files, falls back to manual questions about auth, SCM, and features.
@@ -76,7 +76,7 @@ Asks your current version, deployment method, then asks for config file paths. I
 **Skip-release upgrade:**
 
 ```
-/upgrade-helper --to 1.10 --from 1.8
+/rhdh-upgrade-helper --to 1.10 --from 1.8
 ```
 
 Surfaces all breaking changes across skipped releases (1.9 and 1.10 in this example).
@@ -90,7 +90,7 @@ Surfaces all breaking changes across skipped releases (1.9 and 1.10 in this exam
 | `--config /path/to/file` | No | Individual config file path. Repeatable |
 | `--config-path /dir` | No | Directory to scan for config files |
 
-All arguments can also be set in `.upgrade-helper.yaml` — CLI args override the config file.
+All arguments can also be set in `.rhdh-upgrade-helper.yaml` — CLI args override the config file.
 
 ### What config files to provide
 

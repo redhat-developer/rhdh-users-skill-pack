@@ -52,4 +52,4 @@ class TestAgentsMdStructure:
         assert "## Available skills" in agents_md
         assert "rhdh-templates" in agents_md
         assert "skill-maker" in agents_md
-        assert "upgrade-helper" in agents_md
+        assert "rhdh-upgrade-helper" in agents_md
