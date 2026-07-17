@@ -81,7 +81,7 @@ Do not proceed until user confirms the parameter list.
 
 1. Create `templates/<template-name>/skeleton/` in the **template repo** (not inside source repo unless user directs).
 2. Copy source files into `skeleton/`, preserving structure.
-3. Replace confirmed literals with Nunjucks `{{ values.<param> }}` placeholders.
+3. Replace confirmed literals with Nunjucks `${{ values.<param> }}` placeholders.
 4. Add `{% raw %}` blocks to CI/workflow files as needed.
 5. Include `catalog-info.yaml` in skeleton when the template should register a Component.
 

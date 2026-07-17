@@ -65,7 +65,7 @@ If djLint is absent, `validate` reports an **info** finding and continues — YA
 Common Nunjucks fixes:
 
 - Wrap GitHub Actions `${{ }}` in `{% raw %}…{% endraw %}` (see `conventions.md`)
-- Use `{{ values.field }}` not `{{ parameters.field }}` in skeleton files
+- Use `${{ values.field }}` not `{{ parameters.field }}` in skeleton files
 - Add missing `{% endif %}` / `{% endfor %}` closers
 
 For pre-merge checks, run full `validate` with and without `--lint-skeleton`, or combine both in one invocation.

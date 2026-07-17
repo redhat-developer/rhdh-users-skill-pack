@@ -1,5 +1,5 @@
-# {{ values.componentId }}
+# ${{ values.componentId }}
 
-{{ values.description }}
+${{ values.description }}
 
-Owner: {{ values.owner }}
+Owner: ${{ values.owner }}

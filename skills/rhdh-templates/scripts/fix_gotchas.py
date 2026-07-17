@@ -31,6 +31,7 @@ TOKEN_PATTERNS = [
 
 ACTION_PATTERN = re.compile(r"^\s*action:\s*([a-zA-Z]+:[a-zA-Z][a-zA-Z0-9]*)", re.MULTILINE)
 V1BETA2_EXPR = re.compile(r"(?<!\$)\{\{\s*parameters\.")
+SKELETON_VALUES_NO_PREFIX = re.compile(r"(?<!\$)\{\{\s*values\.")
 API_VERSION_PATTERN = re.compile(r"^apiVersion:\s*(.+)$", re.MULTILINE)
 
 
@@ -122,7 +123,7 @@ def check_v1beta2_expressions(content: str) -> list[dict]:
 
 def convert_expressions(content: str) -> str:
     return re.sub(
-        r"\{\{\s*parameters\.([^}]+)\}\}",
+        r"\{\{\s*parameters\.([^}]+?)\s*\}\}",
         r"${{ parameters.\1 }}",
         content,
     )
@@ -177,6 +178,48 @@ def check_skeleton_parameters(template_path: Path) -> list[dict]:
     return findings
 
 
+def check_skeleton_nunjucks_prefix(template_path: Path) -> list[dict]:
+    """Detect {{ values.* without $ prefix in skeleton files."""
+    findings = []
+    skeleton = template_path.parent / "skeleton"
+    if not skeleton.is_dir():
+        return findings
+    for file in skeleton.rglob("*"):
+        if not file.is_file():
+            continue
+        try:
+            text = file.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        for i, line in enumerate(text.splitlines(), start=1):
+            if SKELETON_VALUES_NO_PREFIX.search(line):
+                rel = file.relative_to(template_path.parent)
+                findings.append(
+                    {
+                        "line": i,
+                        "message": f"Skeleton file {rel} uses bare '{{{{ values.' — must be '${{{{ values.' (line {i})",
+                    }
+                )
+    return findings
+
+
+def fix_skeleton_nunjucks_prefix(template_path: Path) -> None:
+    """Fix {{ values.* → ${{ values.* in skeleton files."""
+    skeleton = template_path.parent / "skeleton"
+    if not skeleton.is_dir():
+        return
+    for file in skeleton.rglob("*"):
+        if not file.is_file():
+            continue
+        try:
+            text = file.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        updated = SKELETON_VALUES_NO_PREFIX.sub(r"${{ values.", text)
+        if updated != text:
+            file.write_text(updated, encoding="utf-8")
+
+
 def check_workflow_raw_blocks(template_path: Path) -> list[dict]:
     findings = []
     skeleton = template_path.parent / "skeleton"
@@ -189,7 +232,8 @@ def check_workflow_raw_blocks(template_path: Path) -> list[dict]:
             text = wf.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
             continue
-        if "{{" in text and "{% raw %}" not in text:
+        bare_braces = re.sub(r"\$\{\{", "", text)
+        if "{{" in bare_braces and "{% raw %}" not in text:
             findings.append(
                 {
                     "line": 0,
@@ -267,6 +311,7 @@ CHECKERS = {
     "missing_steps": lambda c, p: check_missing_section(c, "steps"),
     "fetch_template_values": lambda c, p: check_fetch_template_values(c),
     "workflow_raw_blocks": lambda c, p: check_workflow_raw_blocks(p),
+    "skeleton_nunjucks_prefix": lambda c, p: check_skeleton_nunjucks_prefix(p),
     "skeleton_parameters_ref": lambda c, p: check_skeleton_parameters(p),
     "metadata_tags": lambda c, p: check_metadata_tags(c),
     "sensitive_param_secret_field": lambda c, p: check_sensitive_param_secret_field(c),
@@ -277,6 +322,10 @@ FIXERS = {
     "set_api_version_v1beta3": fix_api_version,
     "lowercase_action_segment": fix_action_casing,
     "convert_to_v1beta3_expressions": convert_expressions,
+}
+
+SKELETON_FIXERS = {
+    "add_dollar_prefix_to_skeleton_values": fix_skeleton_nunjucks_prefix,
 }
 
 
@@ -298,7 +347,7 @@ def run_checks(content: str, template_path: Path, rules: list[dict]) -> list[dic
     return results
 
 
-def apply_fixes(content: str, rules: list[dict]) -> str:
+def apply_fixes(content: str, rules: list[dict], template_path: Path) -> str:
     updated = content
     for rule in rules:
         fix_name = rule.get("fix")
@@ -307,6 +356,9 @@ def apply_fixes(content: str, rules: list[dict]) -> str:
         fixer = FIXERS.get(fix_name)
         if fixer:
             updated = fixer(updated)
+        skeleton_fixer = SKELETON_FIXERS.get(fix_name)
+        if skeleton_fixer:
+            skeleton_fixer(template_path)
     return updated
 
 
@@ -332,7 +384,7 @@ def main() -> int:
 
     updated = original
     if args.apply:
-        updated = apply_fixes(original, rules)
+        updated = apply_fixes(original, rules, template_path)
         if updated != original:
             template_path.write_text(updated, encoding="utf-8")
         findings = run_checks(updated, template_path, rules)

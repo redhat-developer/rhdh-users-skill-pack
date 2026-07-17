@@ -52,7 +52,11 @@ class TestRhdhTemplatesSkillMd:
 
     def test_has_essential_principles(self, skill_md: str) -> None:
         assert "<essential_principles>" in skill_md
-        assert "<success_criteria>" not in skill_md
+        lines = skill_md.splitlines()
+        top_level_success = any(line.strip() == "<success_criteria>" for line in lines)
+        assert not top_level_success, (
+            "SKILL.md should not have a top-level <success_criteria> section (those belong in per-command references)"
+        )
 
     def test_command_metadata_exists(self) -> None:
         meta = SCRIPTS / "command-metadata.json"
@@ -241,6 +245,64 @@ class TestFixGotchasScript:
         data = json.loads(result.stdout)
         rule_ids = {f["rule_id"] for f in data["findings"]}
         assert "sensitive-param-secret-field" in rule_ids
+
+    def test_detects_bare_skeleton_values(self, tmp_path: Path) -> None:
+        template = tmp_path / "template.yaml"
+        template.write_text(
+            "apiVersion: scaffolder.backstage.io/v1beta3\n"
+            "kind: Template\n"
+            "metadata:\n"
+            "  name: bad\n"
+            "  tags:\n"
+            "    - test\n"
+            "spec:\n"
+            "  parameters: []\n"
+            "  steps: []\n",
+            encoding="utf-8",
+        )
+        skeleton = tmp_path / "skeleton"
+        skeleton.mkdir()
+        (skeleton / "catalog-info.yaml").write_text(
+            "apiVersion: backstage.io/v1alpha1\n"
+            "kind: Component\n"
+            "metadata:\n"
+            "  name: {{ values.componentId }}\n"
+            "  description: {{ values.description }}\n",
+            encoding="utf-8",
+        )
+        result = run_script("fix_gotchas.py", "--path", str(template), "--json")
+        data = json.loads(result.stdout)
+        rule_ids = {f["rule_id"] for f in data["findings"]}
+        assert "skeleton-nunjucks-prefix" in rule_ids
+        bare_findings = [f for f in data["findings"] if f["rule_id"] == "skeleton-nunjucks-prefix"]
+        assert len(bare_findings) == 2
+
+    def test_fixes_bare_skeleton_values(self, tmp_path: Path) -> None:
+        template = tmp_path / "template.yaml"
+        template.write_text(
+            "apiVersion: scaffolder.backstage.io/v1beta3\n"
+            "kind: Template\n"
+            "metadata:\n"
+            "  name: fix-test\n"
+            "  tags:\n"
+            "    - test\n"
+            "spec:\n"
+            "  parameters: []\n"
+            "  steps: []\n",
+            encoding="utf-8",
+        )
+        skeleton = tmp_path / "skeleton"
+        skeleton.mkdir()
+        catalog = skeleton / "catalog-info.yaml"
+        catalog.write_text(
+            "metadata:\n  name: {{ values.componentId }}\n  owner: {{ values.owner }}\n",
+            encoding="utf-8",
+        )
+        run_script("fix_gotchas.py", "--path", str(template), "--apply")
+        fixed = catalog.read_text(encoding="utf-8")
+        assert "${{ values.componentId }}" in fixed
+        assert "${{ values.owner }}" in fixed
+        assert "{{ values." not in fixed.replace("${{ values.", "")
 
     def test_detects_missing_metadata_tags(self, tmp_path: Path) -> None:
         bad = tmp_path / "template.yaml"

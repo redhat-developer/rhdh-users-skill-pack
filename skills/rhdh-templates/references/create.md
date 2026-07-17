@@ -82,8 +82,24 @@ Add publish/register steps when user wants full end-to-end flow.
 
 Keep skeleton minimal but valid:
 
-- `README.md` with `{{ values.componentId }}` placeholder
+- `README.md` with `${{ values.componentId }}` placeholder
 - `catalog-info.yaml` when using `catalog:register`
+
+**Important:** Skeleton files use `${{ values.* }}` (with the `$` prefix), not bare `{{ values.* }}`. The `fetch:template` action uses `${{` as its Nunjucks delimiter.
+
+Example `skeleton/catalog-info.yaml`:
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.componentId }}
+  description: ${{ values.description }}
+spec:
+  type: service
+  lifecycle: experimental
+  owner: ${{ values.owner }}
+```
 
 ## Step 6: Register templates
 

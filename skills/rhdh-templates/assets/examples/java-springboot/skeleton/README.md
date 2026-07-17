@@ -1,8 +1,8 @@
-# {{ values.componentId }}
+# ${{ values.componentId }}
 
-{{ values.description }}
+${{ values.description }}
 
-Owner: {{ values.owner }}
+Owner: ${{ values.owner }}
 
 ## Development
 
@@ -10,4 +10,4 @@ Owner: {{ values.owner }}
 ./mvnw spring-boot:run
 ```
 
-Uses Java {{ values.javaVersion }} and package `{{ values.packageName }}`.
+Uses Java ${{ values.javaVersion }} and package `${{ values.packageName }}`.

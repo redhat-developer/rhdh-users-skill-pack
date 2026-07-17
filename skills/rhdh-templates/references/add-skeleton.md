@@ -18,7 +18,7 @@ Locate `templates/<name>/template.yaml` and existing `skeleton/` tree.
 
 | File type | Templating approach |
 |-----------|---------------------|
-| App source, README, YAML config | Nunjucks `{{ values.* }}` |
+| App source, README, YAML config | Nunjucks `${{ values.* }}` |
 | GitHub Actions, Helm with `{{` | `{% raw %}` … `{% endraw %}` OR `copyWithoutTemplating` |
 | Binary / images | Do not template — document manual copy |
 
@@ -32,12 +32,12 @@ Example `skeleton/catalog-info.yaml`:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: {{ values.componentId }}
-  description: {{ values.description }}
+  name: ${{ values.componentId }}
+  description: ${{ values.description }}
 spec:
   type: service
   lifecycle: experimental
-  owner: {{ values.owner }}
+  owner: ${{ values.owner }}
 ```
 
 ## Step 4: Sync template.yaml

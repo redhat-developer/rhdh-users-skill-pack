@@ -52,7 +52,7 @@ input:
 
 ```text
 # skeleton/README.md
-# Project: {{ values.repoName }}
+# Project: ${{ values.repoName }}
 ```
 
 ### When to use `{% raw %}` … `{% endraw %}`

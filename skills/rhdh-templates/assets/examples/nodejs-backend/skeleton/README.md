@@ -1,8 +1,8 @@
-# {{ values.componentId }}
+# ${{ values.componentId }}
 
-{{ values.description }}
+${{ values.description }}
 
-Owner: {{ values.owner }}
+Owner: ${{ values.owner }}
 
 ## Development
 
@@ -11,4 +11,4 @@ npm install
 npm start
 ```
 
-Runs on Node.js {{ values.nodeVersion }}.
+Runs on Node.js ${{ values.nodeVersion }}.

@@ -1,4 +1,4 @@
-package {{ values.packageName }};
+package ${{ values.packageName }};
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +16,7 @@ public class Application {
     static class HelloController {
         @GetMapping("/")
         public String hello() {
-            return "{{ values.componentId }} is running";
+            return "${{ values.componentId }} is running";
         }
     }
 }

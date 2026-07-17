@@ -11,14 +11,14 @@
     <relativePath/>
   </parent>
 
-  <groupId>{{ values.packageName }}</groupId>
-  <artifactId>{{ values.componentId }}</artifactId>
+  <groupId>${{ values.packageName }}</groupId>
+  <artifactId>${{ values.componentId }}</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>{{ values.componentId }}</name>
-  <description>{{ values.description }}</description>
+  <name>${{ values.componentId }}</name>
+  <description>${{ values.description }}</description>
 
   <properties>
-    <java.version>{{ values.javaVersion }}</java.version>
+    <java.version>${{ values.javaVersion }}</java.version>
   </properties>
 
   <dependencies>

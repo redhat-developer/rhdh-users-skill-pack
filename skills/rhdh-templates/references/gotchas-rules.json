@@ -57,6 +57,13 @@
       "fix": null
     },
     {
+      "id": "skeleton-nunjucks-prefix",
+      "severity": "critical",
+      "description": "Skeleton files must use ${{ values.* }} not bare {{ values.* }} — the Backstage fetch:template action uses ${{ as its Nunjucks delimiter",
+      "check": "skeleton_nunjucks_prefix",
+      "fix": "add_dollar_prefix_to_skeleton_values"
+    },
+    {
       "id": "skeleton-parameters-ref",
       "severity": "info",
       "description": "Skeleton files should reference values.* not parameters.*",

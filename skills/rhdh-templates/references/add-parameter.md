@@ -56,7 +56,7 @@ Search all `steps[].input` for missing wiring after the edit.
 
 ## Step 5: Update skeleton (if needed)
 
-If the parameter replaces a literal in skeleton files, update Nunjucks to `{{ values.<name> }}`.
+If the parameter replaces a literal in skeleton files, update Nunjucks to `${{ values.<name> }}`.
 
 ## Step 6: Verify
 

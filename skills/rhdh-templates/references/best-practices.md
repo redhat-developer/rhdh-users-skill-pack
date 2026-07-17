@@ -70,7 +70,7 @@ Common filters: `parseEntityRef`, `pick`, `json`, `replace`. Use filters in step
 
 ## 6. Use the Nunjucks API in skeletons
 
-`fetch:template` processes skeleton files with [Nunjucks](https://mozilla.github.io/nunjucks/templating.html). Pass data via the step `values` map; reference as `{{ values.name }}` in skeleton files.
+`fetch:template` processes skeleton files with [Nunjucks](https://mozilla.github.io/nunjucks/templating.html). Pass data via the step `values` map; reference as `${{ values.name }}` in skeleton files.
 
 **Tags beyond substitution:**
 
