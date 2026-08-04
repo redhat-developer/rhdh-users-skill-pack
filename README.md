@@ -2,7 +2,11 @@
 
 Agent Skills for adopting and using [Red Hat Developer Hub](https://developers.redhat.com/products/rhdh/overview) (RHDH) effectively.
 
-> **Quick start:** `npx skills add redhat-developer/rhdh-users-skill-pack` — works with [50+ coding agents](https://github.com/vercel-labs/skills#supported-agents).
+**Quick start:** `npx skills add redhat-developer/rhdh-users-skill-pack` — works with [50+ coding agents](https://github.com/vercel-labs/skills#supported-agents).
+
+> [!CAUTION]
+>
+> There is no official, commercial support for RHDH Users Skill Pack. Use RHDH Users Skill Pack at your own risk.
 
 ## What's included
 
