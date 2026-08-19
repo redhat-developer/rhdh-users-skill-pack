@@ -1,18 +1,18 @@
-# Release Notes
+# Release notes
 
 One text file per RHDH release, extracted from the official Red Hat documentation.
 
-These are **maintainer-managed files** — users of the skill do not need any tools to use them. The skill reads local files only.
+These are maintainer-managed files. Users of the skill do not need any tools to use them. The skill reads local files only.
 
 ## File naming
 
-`{major}.{minor}.md` — e.g., `1.9.md`, `1.10.md`
+`{major}.{minor}.md`, for example `1.9.md` or `1.10.md`.
 
 ## How to add a new release
 
-Pick whichever method works for you:
+Pick whichever method works for you.
 
-**Option A — lynx + Claude (recommended):**
+### Option A: lynx and Claude (recommended)
 
 ```bash
 # Install lynx (one-time): brew install lynx / dnf install lynx / apt install lynx
@@ -30,11 +30,13 @@ skills/rhdh-upgrade-helper/references/release-notes/1.10.md
 
 Claude strips the navigation boilerplate and structures it into the required sections.
 
-**Option B — paste from browser + Claude:**
-Open the single-page release notes URL in your browser, select all, copy, paste into `raw.txt`. Then ask Claude to convert it as above.
+### Option B: paste from browser and Claude
 
-**Option C — PDF + Claude:**
-Download the PDF from docs.redhat.com, convert with `pdftotext -layout file.pdf raw.txt`. Then ask Claude to convert it as above.
+Open the single-page release notes URL in your browser, select all, copy, and paste into `raw.txt`. Then ask Claude to convert it as above.
+
+### Option C: PDF and Claude
+
+Download the PDF from docs.redhat.com and convert with `pdftotext -layout file.pdf raw.txt`. Then ask Claude to convert it as above.
 
 ### Required sections
 
