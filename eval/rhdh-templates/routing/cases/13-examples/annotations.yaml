@@ -1,0 +1,4 @@
+should_trigger: true
+category: examples
+style: implicit
+rationale: Selects a bundled template example.

@@ -1,0 +1,3 @@
+should_trigger: true
+category: add-step
+rationale: Adds a secret-safe Scaffolder action step.

@@ -1,0 +1,3 @@
+should_trigger: true
+category: add-parameter
+rationale: Adds a parameter to an RHDH template.

@@ -1,0 +1,3 @@
+should_trigger: false
+category: near-miss
+rationale: Backstage plugin development is outside Software Template authoring.

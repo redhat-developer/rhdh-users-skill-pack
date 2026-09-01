@@ -1,0 +1,3 @@
+should_trigger: true
+category: dry-run
+rationale: Exercises the RHDH Scaffolder dry-run workflow.
