@@ -1,8 +1,10 @@
 """Contract tests for the Issue #9 paired uplift evaluation."""
 
 from __future__ import annotations
+
 import importlib
 from pathlib import Path
+
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
