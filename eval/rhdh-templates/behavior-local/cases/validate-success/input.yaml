@@ -1,0 +1,5 @@
+prompt: |
+  Validate `fixture/minimal-template` using the rhdh-templates local validation
+  workflow and its bundled `validate.py --json` command. Do not modify the
+  fixture. Copy the validated template to `output/template.yaml` and write a
+  short diagnostic summary to `output/result.md`.

@@ -1,0 +1,50 @@
+name: rhdh-templates-local-behavior
+description: Evaluate local validation after explicit rhdh-templates invocation.
+
+execution:
+  mode: case
+  skill: rhdh-templates
+  arguments: "{{ input.prompt }}"
+  timeout: 900
+  parallelism: 1
+
+runner:
+  type: codex
+  effort: high
+  plugin_dirs:
+    - .
+
+models:
+  skill: gpt-5.6-luna
+  judge: gpt-5.6-luna
+
+dataset:
+  path: cases
+  workspace:
+    files:
+      - fixture
+  schema: |
+    Each case contains input.yaml, annotations.yaml, and an isolated fixture.
+    annotations.yaml identifies the validation contract and reviewed artifact.
+
+outputs:
+  - path: output
+    schema: |
+      A diagnostic result.md and a copy of the validated template.yaml.
+
+traces:
+  stdout: true
+  stderr: true
+  events: true
+  metrics: true
+
+judges:
+  - name: local_behavior_contract
+    description: Grade reviewed workspace state and observed validation results.
+    module: eval.rhdh-templates.behavior-local.judges
+    function: check_local_behavior
+
+thresholds:
+  local_behavior_contract:
+    min_pass_rate: 1.0
+    max_error_rate: 0.0
