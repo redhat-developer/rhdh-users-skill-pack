@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
-import importlib
+import importlib.util
 from pathlib import Path
 
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 UPLIFT_ROOT = REPO_ROOT / "eval" / "rhdh-templates" / "uplift"
+
+
+def load_judges():
+    spec = importlib.util.spec_from_file_location("uplift_judges", UPLIFT_ROOT / "judges.py")
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def test_skill_and_baseline_use_the_same_reviewed_cases_and_fixture() -> None:
@@ -20,7 +28,7 @@ def test_skill_and_baseline_use_the_same_reviewed_cases_and_fixture() -> None:
 
 
 def test_uplift_judge_enforces_confirmation_and_exact_modifications() -> None:
-    judges = importlib.import_module("eval.rhdh-templates.uplift.judges")
+    judges = load_judges()
     assert judges.check_uplift_behavior(
         {
             "annotations": {
@@ -44,7 +52,7 @@ def test_uplift_judge_enforces_confirmation_and_exact_modifications() -> None:
 
 
 def test_baseline_judge_rejects_skill_consultation() -> None:
-    judges = importlib.import_module("eval.rhdh-templates.uplift.judges")
+    judges = load_judges()
     outputs = {
         "events": [
             {

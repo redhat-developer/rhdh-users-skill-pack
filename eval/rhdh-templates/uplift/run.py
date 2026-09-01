@@ -77,8 +77,6 @@ def main() -> int:
         "--run-id",
         args.run_id,
     ]
-    if config_path.name == "skill.eval.yaml":
-        execute_args.extend(["--skill", "rhdh-templates"])
     run(scripts / "execute.py", execute_args)
     run(
         scripts / "collect.py",

@@ -23,6 +23,7 @@ if [[ ! -f "${aeh_checkout}/skills/eval-run/scripts/execute.py" ]]; then
 fi
 cd "${REPO_ROOT}"
 export UV_CACHE_DIR="${UV_CACHE_DIR:-/tmp/rhdh-aeh-uv-cache}"
+export AGENT_EVAL_RUNS_DIR="${REPO_ROOT}/eval/runs/rhdh-templates-uplift"
 for arm in skill baseline; do
   config="${SCRIPT_DIR}/${arm}.eval.yaml"
   for index in $(seq 1 "${runs}"); do
