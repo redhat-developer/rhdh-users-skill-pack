@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1beta2
+kind: Template
+metadata:
+  name: repair-me
+  title: Repair Me
+  description: Template with fixable gotchas
+  tags:
+    - test
+spec:
+  owner: group:default/platform-team
+  type: service
+  parameters:
+    - title: Details
+      properties:
+        name:
+          title: Name
+          type: string
+  steps:
+    - id: pub
+      action: publish:GitHub
+      input: {}

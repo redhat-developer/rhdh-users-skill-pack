@@ -1,0 +1,14 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: bad
+  tags:
+    - test
+spec:
+  parameters:
+    - title: Auth
+      properties:
+        apiToken:
+          title: API Token
+          type: string
+  steps: []

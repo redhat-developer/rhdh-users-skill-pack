@@ -1,0 +1,3 @@
+case_kind: fix-gotchas-repair
+modified_path: fixture/fixable-template/template.yaml
+expected_template: expected/template.yaml
