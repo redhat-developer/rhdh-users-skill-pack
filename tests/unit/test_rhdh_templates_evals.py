@@ -174,6 +174,188 @@ def test_local_judge_rejects_modified_fixture() -> None:
     assert "modified" in rationale
 
 
+def test_local_judge_accepts_only_the_reviewed_safe_repair() -> None:
+    judges = importlib.import_module("eval.rhdh-templates.behavior-local.judges")
+    repaired = "apiVersion: scaffolder.backstage.io/v1beta3\nkind: Template\n"
+    outputs = {
+        "annotations": {
+            "case_kind": "fix-gotchas-repair",
+            "modified_path": "fixture/fixable-template/template.yaml",
+        },
+        "annotation_expected_template_content": repaired,
+        "files": {"output/template.yaml": repaired},
+        "modified_files": {"fixture/fixable-template/template.yaml": repaired},
+        "events": [
+            {
+                "type": "assistant",
+                "tools": [
+                    {
+                        "id": "fix-1",
+                        "name": "Bash",
+                        "input": {
+                            "command": (
+                                "python skills/rhdh-templates/scripts/fix_gotchas.py "
+                                "--path fixture/fixable-template --apply --json"
+                            )
+                        },
+                    },
+                    {
+                        "id": "validate-2",
+                        "name": "Bash",
+                        "input": {
+                            "command": (
+                                "python skills/rhdh-templates/scripts/validate.py "
+                                "--path fixture/fixable-template --json"
+                            )
+                        },
+                    },
+                ],
+            },
+            {
+                "type": "tool_result",
+                "tool_use_id": "fix-1",
+                "content": '{"ok": true, "applied": true}',
+                "is_error": False,
+            },
+            {
+                "type": "tool_result",
+                "tool_use_id": "validate-2",
+                "content": '{"ok": true, "critical_count": 0}',
+                "is_error": False,
+            },
+        ],
+    }
+
+    passed, rationale = judges.check_local_behavior(outputs)
+
+    assert passed is True, rationale
+
+    outputs["events"].pop()
+    passed, rationale = judges.check_local_behavior(outputs)
+    assert passed is False
+    assert "post-repair" in rationale
+
+
+def test_local_judge_rejects_unreviewed_safe_repair() -> None:
+    judges = importlib.import_module("eval.rhdh-templates.behavior-local.judges")
+    repaired = "kind: Template\n"
+    outputs = {
+        "annotations": {
+            "case_kind": "fix-gotchas-repair",
+            "modified_path": "fixture/fixable-template/template.yaml",
+        },
+        "annotation_expected_template_content": repaired,
+        "files": {"output/template.yaml": repaired},
+        "modified_files": {
+            "fixture/fixable-template/template.yaml": repaired,
+            "fixture/unreviewed.yaml": "changed\n",
+        },
+        "events": [],
+        "conversation": "The repair and revalidation completed successfully.",
+    }
+
+    passed, rationale = judges.check_local_behavior(outputs)
+
+    assert passed is False
+    assert "workspace changes" in rationale
+
+
+def test_local_judge_accepts_manual_finding_without_mutation() -> None:
+    judges = importlib.import_module("eval.rhdh-templates.behavior-local.judges")
+    outputs = {
+        "annotations": {
+            "case_kind": "manual-secret-finding",
+            "expected_rule_id": "sensitive-param-secret-field",
+        },
+        "modified_files": {},
+        "events": [
+            {
+                "type": "assistant",
+                "tools": [
+                    {
+                        "id": "check-1",
+                        "name": "Bash",
+                        "input": {
+                            "command": (
+                                "python skills/rhdh-templates/scripts/fix_gotchas.py "
+                                "--path fixture/manual-issue --json"
+                            )
+                        },
+                    }
+                ],
+            },
+            {
+                "type": "tool_result",
+                "tool_use_id": "check-1",
+                "content": (
+                    '{"ok": true, "applied": false, "findings": '
+                    '[{"rule_id": "sensitive-param-secret-field"}]}'
+                ),
+                "is_error": False,
+            },
+        ],
+    }
+
+    passed, rationale = judges.check_local_behavior(outputs)
+
+    assert passed is True, rationale
+
+
+def test_local_judge_rejects_manual_finding_with_apply_or_missing_evidence() -> None:
+    judges = importlib.import_module("eval.rhdh-templates.behavior-local.judges")
+    outputs = {
+        "annotations": {
+            "case_kind": "manual-secret-finding",
+            "expected_rule_id": "sensitive-param-secret-field",
+        },
+        "modified_files": {},
+        "conversation": "The secret field requires manual review.",
+        "events": [],
+    }
+
+    passed, rationale = judges.check_local_behavior(outputs)
+
+    assert passed is False
+    assert "expected manual finding" in rationale
+
+    outputs["modified_files"] = {"fixture/manual-issue/template.yaml": "changed\n"}
+    passed, rationale = judges.check_local_behavior(outputs)
+    assert passed is False
+    assert "modified" in rationale
+
+    outputs["modified_files"] = {}
+    outputs["events"] = [
+        {
+            "type": "assistant",
+            "tools": [
+                {
+                    "id": "check-1",
+                    "name": "Bash",
+                    "input": {
+                        "command": (
+                            "python skills/rhdh-templates/scripts/fix_gotchas.py "
+                            "--path fixture/manual-issue --apply --json"
+                        )
+                    },
+                }
+            ],
+        },
+        {
+            "type": "tool_result",
+            "tool_use_id": "check-1",
+            "content": (
+                '{"ok": true, "applied": false, "findings": '
+                '[{"rule_id": "sensitive-param-secret-field"}]}'
+            ),
+            "is_error": False,
+        },
+    ]
+    passed, rationale = judges.check_local_behavior(outputs)
+
+    assert passed is False
+    assert "expected manual finding" in rationale
+
+
 def test_eval_config_and_case_are_portable_and_complete() -> None:
     configs = list(EVAL_ROOT.glob("**/eval.yaml"))
 
@@ -187,10 +369,15 @@ def test_eval_config_and_case_are_portable_and_complete() -> None:
     assert "/home/" not in text
     assert config["models"]["skill"] == "gpt-5.6-luna"
     assert config["dataset"]["workspace"]["files"] == ["fixture"]
-    assert cases == [cases_dir / "validate-success"]
-    assert (cases[0] / "input.yaml").is_file()
-    assert (cases[0] / "annotations.yaml").is_file()
-    assert (cases[0] / "fixture").is_dir()
+    assert {case.name for case in cases} == {
+        "validate-success",
+        "fix-gotchas-repair",
+        "manual-secret-finding",
+    }
+    for case in cases:
+        assert (case / "input.yaml").is_file()
+        assert (case / "annotations.yaml").is_file()
+        assert (case / "fixture").is_dir()
 
 
 def test_reviewed_template_matches_the_fixture() -> None:
@@ -201,14 +388,15 @@ def test_reviewed_template_matches_the_fixture() -> None:
     ).read_text()
 
 
-def test_runner_verifies_fixture_was_provisioned(tmp_path: Path) -> None:
+def test_runner_verifies_each_selected_fixture_was_provisioned(tmp_path: Path) -> None:
     runner = importlib.import_module("eval.rhdh-templates.run_suite")
     workspace = tmp_path / "workspace"
-    fixture = (
+    validation_fixture = (
         workspace / "cases" / "validate-success" / "fixture" / "minimal-template" / "template.yaml"
     )
 
-    assert runner.fixture_is_provisioned(workspace) is False
-    fixture.parent.mkdir(parents=True)
-    fixture.write_text("kind: Template\n")
-    assert runner.fixture_is_provisioned(workspace) is True
+    assert runner.fixtures_are_provisioned(workspace, ["validate-success"]) is False
+    validation_fixture.parent.mkdir(parents=True)
+    validation_fixture.write_text("kind: Template\n")
+    assert runner.fixtures_are_provisioned(workspace, ["validate-success"]) is True
+    assert runner.fixtures_are_provisioned(workspace, None) is False

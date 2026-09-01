@@ -1,0 +1,6 @@
+prompt: |
+  Repair `fixture/fixable-template/template.yaml` using the rhdh-templates
+  `fix-gotchas` workflow and its bundled `fix_gotchas.py --apply --json`
+  command. Revalidate the repaired file with `validate.py --json`. Copy the
+  final template to `output/template.yaml` and write a short diagnostic summary
+  to `output/result.md`.

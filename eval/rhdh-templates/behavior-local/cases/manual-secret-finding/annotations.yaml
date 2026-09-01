@@ -1,0 +1,2 @@
+case_kind: manual-secret-finding
+expected_rule_id: sensitive-param-secret-field

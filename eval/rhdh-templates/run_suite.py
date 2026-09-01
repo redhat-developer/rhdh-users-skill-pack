@@ -12,9 +12,23 @@ from pathlib import Path
 
 EVAL_ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = EVAL_ROOT / "behavior-local" / "eval.yaml"
-EXPECTED_FIXTURE = (
-    Path("cases") / "validate-success" / "fixture" / "minimal-template" / "template.yaml"
-)
+EXPECTED_FIXTURES = {
+    "validate-success": Path("cases")
+    / "validate-success"
+    / "fixture"
+    / "minimal-template"
+    / "template.yaml",
+    "fix-gotchas-repair": Path("cases")
+    / "fix-gotchas-repair"
+    / "fixture"
+    / "fixable-template"
+    / "template.yaml",
+    "manual-secret-finding": Path("cases")
+    / "manual-secret-finding"
+    / "fixture"
+    / "manual-issue"
+    / "template.yaml",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -42,9 +56,13 @@ def run_step(label: str, script: Path, arguments: list[str], *, capture: bool = 
     return result.stdout if capture else ""
 
 
-def fixture_is_provisioned(workspace: Path) -> bool:
-    """Return whether AEH copied the reviewed fixture into the case workspace."""
-    return (workspace / EXPECTED_FIXTURE).is_file()
+def fixtures_are_provisioned(workspace: Path, case_ids: list[str] | None) -> bool:
+    """Return whether AEH copied each selected reviewed fixture."""
+    selected_cases = case_ids or list(EXPECTED_FIXTURES)
+    return all(
+        case_id in EXPECTED_FIXTURES and (workspace / EXPECTED_FIXTURES[case_id]).is_file()
+        for case_id in selected_cases
+    )
 
 
 def main() -> int:
@@ -114,8 +132,8 @@ def main() -> int:
         return 1
     print(f"Workspace: {workspace}", file=sys.stderr)
     workspace_path = Path(workspace)
-    if not fixture_is_provisioned(workspace_path):
-        print(f"AEH did not provision expected fixture: {EXPECTED_FIXTURE}", file=sys.stderr)
+    if not fixtures_are_provisioned(workspace_path, args.cases):
+        print("AEH did not provision each selected fixture", file=sys.stderr)
         return 1
 
     execute_args = [

@@ -1,5 +1,5 @@
 name: rhdh-templates-local-behavior
-description: Evaluate local validation after explicit rhdh-templates invocation.
+description: Evaluate local validation, safe repair, and manual findings after explicit rhdh-templates invocation.
 
 execution:
   mode: case

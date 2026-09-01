@@ -9,7 +9,12 @@ from pathlib import PurePosixPath
 from typing import Any
 
 VALIDATOR_SUFFIX = "skills/rhdh-templates/scripts/validate.py"
-FIXTURE_PATHS = {"fixture/minimal-template", "fixture/minimal-template/template.yaml"}
+FIX_GOTCHAS_SUFFIX = "skills/rhdh-templates/scripts/fix_gotchas.py"
+FIXTURE_PATHS = {
+    "validate-success": {"fixture/minimal-template", "fixture/minimal-template/template.yaml"},
+    "fix-gotchas-repair": {"fixture/fixable-template", "fixture/fixable-template/template.yaml"},
+    "manual-secret-finding": {"fixture/manual-issue", "fixture/manual-issue/template.yaml"},
+}
 
 
 def _observed_commands(outputs: dict[str, Any]) -> list[tuple[str, str, bool]]:
@@ -67,7 +72,13 @@ def _shell_tokens(command: str) -> list[str] | None:
     return tokens
 
 
-def _is_expected_validator_invocation(command: str) -> bool:
+def _is_expected_script_invocation(
+    command: str,
+    script_suffix: str,
+    fixture_paths: set[str],
+    required_flags: set[str],
+    prohibited_flags: set[str] | None = None,
+) -> bool:
     tokens = _shell_tokens(command)
     if not tokens or any(token and set(token) <= set("();<>|&") for token in tokens):
         return False
@@ -75,41 +86,120 @@ def _is_expected_validator_invocation(command: str) -> bool:
     interpreter = PurePosixPath(tokens[0]).name
     if not re.fullmatch(r"python(?:\d+(?:\.\d+)*)?", interpreter):
         return False
-    if len(tokens) < 2 or not tokens[1].endswith(VALIDATOR_SUFFIX):
+    if len(tokens) < 2 or not tokens[1].endswith(script_suffix):
         return False
 
     arguments = tokens[2:]
-    if "--json" not in arguments or arguments.count("--path") != 1:
+    if not required_flags.issubset(arguments) or (
+        prohibited_flags and prohibited_flags.intersection(arguments)
+    ):
+        return False
+    if arguments.count("--path") != 1:
         return False
     path_index = arguments.index("--path")
     if path_index + 1 >= len(arguments):
         return False
-    return arguments[path_index + 1].rstrip("/") in FIXTURE_PATHS
+    return arguments[path_index + 1].rstrip("/") in fixture_paths
 
 
-def _successful_validation(outputs: dict[str, Any]) -> bool:
+def _successful_json_command(
+    outputs: dict[str, Any],
+    script_suffix: str,
+    fixture_paths: set[str],
+    required_flags: set[str],
+    required_result: dict[str, Any],
+    prohibited_flags: set[str] | None = None,
+) -> bool:
     for command, content, is_error in _observed_commands(outputs):
-        if not _is_expected_validator_invocation(command) or is_error:
+        if is_error or not _is_expected_script_invocation(
+            command,
+            script_suffix,
+            fixture_paths,
+            required_flags,
+            prohibited_flags,
+        ):
             continue
         result = _json_object(content)
-        if result is not None and result.get("ok") is True:
-            if result.get("critical_count") == 0:
-                return True
+        if result is not None and all(
+            result.get(key) == value for key, value in required_result.items()
+        ):
+            return True
     return False
 
 
 def check_local_behavior(outputs: dict[str, Any]) -> tuple[bool, str]:
     """Check reviewed output, an unchanged fixture, and observed validation."""
     case_kind = outputs.get("annotations", {}).get("case_kind")
-    if case_kind != "validate-success":
-        return False, f"unsupported case kind: {case_kind!r}"
+    if case_kind == "manual-secret-finding":
+        if outputs.get("modified_files"):
+            return False, "manual-only finding case modified fixture files"
+        expected_rule_id = outputs.get("annotations", {}).get("expected_rule_id")
+        if not isinstance(expected_rule_id, str):
+            return False, "manual-only finding case has no reviewed rule identifier"
+        for command, content, is_error in _observed_commands(outputs):
+            if is_error or not _is_expected_script_invocation(
+                command,
+                FIX_GOTCHAS_SUFFIX,
+                FIXTURE_PATHS[case_kind],
+                {"--json"},
+                {"--apply"},
+            ):
+                continue
+            result = _json_object(content)
+            rule_ids = (
+                {
+                    finding.get("rule_id")
+                    for finding in result.get("findings", [])
+                    if isinstance(finding, dict)
+                }
+                if isinstance(result, dict)
+                else set()
+            )
+            if (
+                result is not None
+                and result.get("applied") is False
+                and expected_rule_id in rule_ids
+            ):
+                return True, "manual finding was observed and the fixture remained unchanged"
+        return False, "expected manual finding was not observed without --apply"
 
     expected = outputs.get("annotation_expected_template_content")
     actual = outputs.get("files", {}).get("output/template.yaml")
     if not isinstance(expected, str) or actual != expected:
         return False, "output/template.yaml does not match the reviewed expected artifact"
+
+    if case_kind == "fix-gotchas-repair":
+        modified_path = outputs.get("annotations", {}).get("modified_path")
+        if outputs.get("modified_files") != {modified_path: expected}:
+            return False, "workspace changes differ from the single reviewed repair"
+        if not _successful_json_command(
+            outputs,
+            FIX_GOTCHAS_SUFFIX,
+            FIXTURE_PATHS[case_kind],
+            {"--apply", "--json"},
+            {"ok": True, "applied": True},
+        ):
+            return False, "no successful applied fix_gotchas.py result was observed"
+        if not _successful_json_command(
+            outputs,
+            VALIDATOR_SUFFIX,
+            FIXTURE_PATHS[case_kind],
+            {"--json"},
+            {"ok": True, "critical_count": 0},
+        ):
+            return False, "no clean post-repair validation result was observed"
+        return True, "exact reviewed repair and clean revalidation were observed"
+
+    if case_kind != "validate-success":
+        return False, f"unsupported case kind: {case_kind!r}"
     if outputs.get("modified_files"):
         return False, "validation-only case modified fixture files"
-    if not _successful_validation(outputs):
+    if not _successful_json_command(
+        outputs,
+        VALIDATOR_SUFFIX,
+        FIXTURE_PATHS[case_kind],
+        {"--json"},
+        {"ok": True, "critical_count": 0},
+    ):
         return False, "no successful validate.py JSON result was observed in the trace"
     return True, "template matched expected artifact and clean validation was observed"

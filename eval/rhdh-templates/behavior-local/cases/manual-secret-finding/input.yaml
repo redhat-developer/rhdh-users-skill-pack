@@ -1,0 +1,6 @@
+prompt: |
+  Inspect `fixture/manual-issue/template.yaml` using the rhdh-templates local
+  gotcha checks and the bundled `fix_gotchas.py --json` command. Do not use
+  `--apply` and do not modify the fixture because secret-field selection
+  requires human judgment. Write a short diagnostic summary to
+  `output/result.md`.

@@ -1,9 +1,9 @@
 # `rhdh-templates` local validation eval
 
-This eval measures one `rhdh-templates` behavior using observable trace and
-filesystem evidence: validating an already-valid Software Template without
-changing its fixture. It uses Agent Eval Harness (AEH) `v1.39.2` and pins
-`gpt-5.6-luna` as the reference model.
+This eval measures three `rhdh-templates` behaviors using observable trace and
+filesystem evidence: validating a clean template, applying one reviewed repair,
+and reporting one manual-only secret-field finding. It uses Agent Eval Harness
+(AEH) `v1.39.2` and pins `gpt-5.6-luna` as the reference model.
 
 The eval runs locally. It does not require MLflow or a running RHDH instance.
 
@@ -42,13 +42,16 @@ AEH stage or the configured threshold failed; inspect `summary.yaml`,
 
 ## Evidence and judging
 
-The deterministic judge requires all of the following:
+The deterministic judge requires reviewed output, an exact allowed change set,
+and structured results observed from the bundled commands:
 
-- `output/template.yaml` exactly matches the reviewed expected artifact;
-- no fixture file was modified; and
-- the normalized tool trace contains a successful `validate.py` result whose
-  JSON reports `ok: true` and zero critical findings.
+- the validation case copies the reviewed artifact, leaves its fixture unchanged,
+  and observes `validate.py --json` with zero critical findings;
+- the repair case changes only the reviewed file to the reviewed content, then
+  observes applied `fix_gotchas.py --json` and clean revalidation; and
+- the manual-finding case leaves its fixture unchanged and observes the reviewed
+  finding from `fix_gotchas.py --json` without `--apply`.
 
 Agent-written summaries are diagnostic only and cannot make a failing case
 pass. The prompt, fixture, annotations, and reviewed expected artifact are
-self-contained under `behavior-local/cases/validate-success/`.
+self-contained under `behavior-local/cases/`.
