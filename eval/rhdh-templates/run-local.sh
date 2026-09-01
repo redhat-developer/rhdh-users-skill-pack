@@ -34,7 +34,6 @@ shift
 
 case "${suite}" in
   behavior-local)
-    config="${SCRIPT_DIR}/behavior-local/eval.yaml"
     ;;
   *)
     echo "Unknown suite: ${suite}" >&2
@@ -76,12 +75,15 @@ if [[ -n ${AEH_CODEX_HOME:-} ]]; then
     exit 1
   fi
   export CODEX_HOME="${AEH_CODEX_HOME}"
-elif [[ -n ${CODEX_HOME:-} && -d ${CODEX_HOME} ]]; then
-  source_codex_home=${CODEX_HOME}
+else
+  source_codex_home=${CODEX_HOME:-}
+  if [[ -z ${source_codex_home} && -n ${HOME:-} ]]; then
+    source_codex_home="${HOME}/.codex"
+  fi
   runtime_codex_home=$(mktemp -d /tmp/rhdh-aeh-codex-home.XXXXXX)
   chmod 700 "${runtime_codex_home}"
   for filename in auth.json config.toml installation_id; do
-    if [[ -f ${source_codex_home}/${filename} ]]; then
+    if [[ -n ${source_codex_home} && -f ${source_codex_home}/${filename} ]]; then
       cp -p -- "${source_codex_home}/${filename}" "${runtime_codex_home}/${filename}"
     fi
   done
@@ -90,4 +92,4 @@ elif [[ -n ${CODEX_HOME:-} && -d ${CODEX_HOME} ]]; then
 fi
 
 uv run --project "${aeh_checkout}" python "${SCRIPT_DIR}/run_suite.py" \
-  --aeh-dir "${aeh_checkout}" --config "${config}" "$@"
+  --aeh-dir "${aeh_checkout}" "$@"

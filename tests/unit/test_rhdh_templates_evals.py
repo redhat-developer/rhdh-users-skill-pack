@@ -33,8 +33,9 @@ def test_local_runner_help_is_available_without_starting_aeh() -> None:
 def test_local_runner_isolates_codex_home_and_removes_the_copy(
     tmp_path: Path,
 ) -> None:
-    source_home = tmp_path / "source-codex-home"
-    source_home.mkdir()
+    user_home = tmp_path / "user-home"
+    source_home = user_home / ".codex"
+    source_home.mkdir(parents=True)
     (source_home / "auth.json").write_text('{"token": "test-only"}\n')
     (source_home / "config.toml").write_text('model = "test"\n')
 
@@ -55,10 +56,11 @@ def test_local_runner_isolates_codex_home_and_removes_the_copy(
     env.update(
         {
             "AEH_CHECKOUT": str(aeh_checkout),
-            "CODEX_HOME": str(source_home),
+            "HOME": str(user_home),
             "PATH": f"{fake_bin}:{env['PATH']}",
         }
     )
+    env.pop("CODEX_HOME", None)
     result = subprocess.run(
         [EVAL_ROOT / "run-local.sh", "behavior-local"],
         cwd=REPO_ROOT,
@@ -86,9 +88,12 @@ def test_python_runner_exposes_a_stable_local_interface() -> None:
 
     assert result.returncode == 0
     assert "--aeh-dir" in result.stdout
-    assert "--config" in result.stdout
     assert "--cases" in result.stdout
     assert "--no-llm-judges" in result.stdout
+    assert "--config" not in result.stdout
+    assert "--model" not in result.stdout
+    assert "--effort" not in result.stdout
+    assert "--parallelism" not in result.stdout
 
 
 def _valid_outputs() -> dict:
@@ -108,7 +113,7 @@ def _valid_outputs() -> dict:
                         "input": {
                             "command": (
                                 "python skills/rhdh-templates/scripts/validate.py "
-                                "--path fixture/template --json"
+                                "--path fixture/minimal-template --json"
                             )
                         },
                     }
@@ -137,6 +142,20 @@ def test_local_judge_rejects_agent_claim_without_trace_evidence() -> None:
     outputs = _valid_outputs()
     outputs["events"] = []
     outputs["conversation"] = "Validation passed with zero critical findings."
+
+    passed, rationale = judges.check_local_behavior(outputs)
+
+    assert passed is False
+    assert "validate.py" in rationale
+
+
+def test_local_judge_rejects_echo_spoofing_validator_evidence() -> None:
+    judges = importlib.import_module("eval.rhdh-templates.behavior-local.judges")
+    outputs = _valid_outputs()
+    outputs["events"][0]["tools"][0]["input"]["command"] = (
+        'echo \'{"ok": true, "critical_count": 0}\' # validate.py --json '
+        "--path fixture/minimal-template"
+    )
 
     passed, rationale = judges.check_local_behavior(outputs)
 
@@ -180,3 +199,16 @@ def test_reviewed_template_matches_the_fixture() -> None:
     assert (case / "expected" / "template.yaml").read_text() == (
         case / "fixture" / "minimal-template" / "template.yaml"
     ).read_text()
+
+
+def test_runner_verifies_fixture_was_provisioned(tmp_path: Path) -> None:
+    runner = importlib.import_module("eval.rhdh-templates.run_suite")
+    workspace = tmp_path / "workspace"
+    fixture = (
+        workspace / "cases" / "validate-success" / "fixture" / "minimal-template" / "template.yaml"
+    )
+
+    assert runner.fixture_is_provisioned(workspace) is False
+    fixture.parent.mkdir(parents=True)
+    fixture.write_text("kind: Template\n")
+    assert runner.fixture_is_provisioned(workspace) is True

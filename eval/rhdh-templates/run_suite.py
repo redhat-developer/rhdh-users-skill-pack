@@ -4,25 +4,25 @@
 from __future__ import annotations
 
 import argparse
-import os
 import re
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+EVAL_ROOT = Path(__file__).resolve().parent
+CONFIG_PATH = EVAL_ROOT / "behavior-local" / "eval.yaml"
+EXPECTED_FIXTURE = (
+    Path("cases") / "validate-success" / "fixture" / "minimal-template" / "template.yaml"
+)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--aeh-dir", type=Path, required=True)
-    parser.add_argument("--config", type=Path, required=True)
-    parser.add_argument("--model")
     parser.add_argument("--run-id")
     parser.add_argument("--cases", nargs="+")
     parser.add_argument("--no-llm-judges", action="store_true")
-    parser.add_argument("--effort", choices=["minimal", "low", "medium", "high", "xhigh"])
-    parser.add_argument("--parallelism", type=int)
-    parser.add_argument("--open", action="store_true")
     return parser.parse_args()
 
 
@@ -42,10 +42,15 @@ def run_step(label: str, script: Path, arguments: list[str], *, capture: bool = 
     return result.stdout if capture else ""
 
 
+def fixture_is_provisioned(workspace: Path) -> bool:
+    """Return whether AEH copied the reviewed fixture into the case workspace."""
+    return (workspace / EXPECTED_FIXTURE).is_file()
+
+
 def main() -> int:
     args = parse_args()
     aeh_dir = args.aeh_dir.resolve()
-    config_path = args.config.resolve()
+    config_path = CONFIG_PATH
     scripts = aeh_dir / "skills" / "eval-run" / "scripts"
     required_scripts = [
         scripts / name
@@ -70,9 +75,9 @@ def main() -> int:
     from agent_eval.config import EvalConfig  # type: ignore[import-not-found]
 
     config = EvalConfig.from_yaml(config_path)
-    model = args.model or config.models.skill
+    model = config.models.skill
     if not model:
-        print("No model configured; pass --model or set models.skill", file=sys.stderr)
+        print("No reference model configured in eval.yaml", file=sys.stderr)
         return 2
     run_id = args.run_id or (
         datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ-") + model.replace("/", "-")
@@ -81,7 +86,7 @@ def main() -> int:
         print(f"Invalid run id: {run_id!r}", file=sys.stderr)
         return 2
 
-    runs_base = Path(os.environ.get("AGENT_EVAL_RUNS_DIR", "eval/runs"))
+    runs_base = Path("eval/runs")
     output_dir = runs_base / config.eval_name() / run_id
     print(f"Suite: {config.name}", file=sys.stderr)
     print(f"Model: {model}", file=sys.stderr)
@@ -108,6 +113,10 @@ def main() -> int:
         print("AEH did not report a workspace path", file=sys.stderr)
         return 1
     print(f"Workspace: {workspace}", file=sys.stderr)
+    workspace_path = Path(workspace)
+    if not fixture_is_provisioned(workspace_path):
+        print(f"AEH did not provision expected fixture: {EXPECTED_FIXTURE}", file=sys.stderr)
+        return 1
 
     execute_args = [
         "--config",
@@ -124,10 +133,6 @@ def main() -> int:
     target = config.resolve_skill()
     if target and not config.is_prompt_mode():
         execute_args.extend(["--skill", target])
-    if args.effort:
-        execute_args.extend(["--effort", args.effort])
-    if args.parallelism is not None:
-        execute_args.extend(["--parallelism", str(args.parallelism)])
     run_step("execute", scripts / "execute.py", execute_args)
 
     run_step(
@@ -158,8 +163,6 @@ def main() -> int:
         )
 
     report_args = ["--run-id", run_id, "--config", str(config_path)]
-    if args.open:
-        report_args.append("--open")
     run_step("report", scripts / "report.py", report_args)
     print(f"\nResults: {output_dir}")
     return 0

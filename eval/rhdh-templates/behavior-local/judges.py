@@ -3,7 +3,13 @@
 from __future__ import annotations
 
 import json
+import re
+import shlex
+from pathlib import PurePosixPath
 from typing import Any
+
+VALIDATOR_SUFFIX = "skills/rhdh-templates/scripts/validate.py"
+FIXTURE_PATHS = {"fixture/minimal-template", "fixture/minimal-template/template.yaml"}
 
 
 def _observed_commands(outputs: dict[str, Any]) -> list[tuple[str, str, bool]]:
@@ -45,9 +51,45 @@ def _json_object(content: str) -> dict[str, Any] | None:
     return None
 
 
+def _shell_tokens(command: str) -> list[str] | None:
+    try:
+        lexer = shlex.shlex(command, posix=True, punctuation_chars=True)
+        lexer.whitespace_split = True
+        lexer.commenters = "#"
+        tokens = list(lexer)
+    except ValueError:
+        return None
+
+    if tokens and PurePosixPath(tokens[0]).name in {"bash", "sh"}:
+        for index, token in enumerate(tokens[1:], start=1):
+            if token.startswith("-") and "c" in token[1:] and index + 1 < len(tokens):
+                return _shell_tokens(tokens[index + 1])
+    return tokens
+
+
+def _is_expected_validator_invocation(command: str) -> bool:
+    tokens = _shell_tokens(command)
+    if not tokens or any(token and set(token) <= set("();<>|&") for token in tokens):
+        return False
+
+    interpreter = PurePosixPath(tokens[0]).name
+    if not re.fullmatch(r"python(?:\d+(?:\.\d+)*)?", interpreter):
+        return False
+    if len(tokens) < 2 or not tokens[1].endswith(VALIDATOR_SUFFIX):
+        return False
+
+    arguments = tokens[2:]
+    if "--json" not in arguments or arguments.count("--path") != 1:
+        return False
+    path_index = arguments.index("--path")
+    if path_index + 1 >= len(arguments):
+        return False
+    return arguments[path_index + 1].rstrip("/") in FIXTURE_PATHS
+
+
 def _successful_validation(outputs: dict[str, Any]) -> bool:
     for command, content, is_error in _observed_commands(outputs):
-        if "validate.py" not in command or is_error:
+        if not _is_expected_validator_invocation(command) or is_error:
             continue
         result = _json_object(content)
         if result is not None and result.get("ok") is True:
