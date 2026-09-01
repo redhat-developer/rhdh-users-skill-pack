@@ -8,18 +8,14 @@ usage() { cat <<'EOF'
 Usage: ./eval/rhdh-templates/uplift/run-local.sh [--runs COUNT]
 
 Runs skill and baseline arms the same number of times (default: three),
-retains AEH results in local MLflow, and generates an observed-only comparison.
-Set MLFLOW_TRACKING_URI to a local MLflow server and AEH_CHECKOUT to reuse AEH.
+retains local AEH results, and generates an observed-only comparison.
+Set AEH_CHECKOUT to reuse an AEH checkout.
 EOF
 }
 runs=3
 if [[ ${1:-} == "--help" || ${1:-} == "-h" ]]; then usage; exit 0; fi
 if [[ ${1:-} == "--runs" && ${2:-} =~ ^[1-9][0-9]*$ ]]; then runs=$2; shift 2; fi
-if [[ $# -ne 0 || -z ${MLFLOW_TRACKING_URI:-} ]]; then
-  [[ $# -eq 0 ]] || usage >&2
-  [[ -n ${MLFLOW_TRACKING_URI:-} ]] || echo "MLFLOW_TRACKING_URI must point to the local MLflow server" >&2
-  exit 2
-fi
+if [[ $# -ne 0 ]]; then usage >&2; exit 2; fi
 if [[ -n ${AEH_CHECKOUT:-} ]]; then aeh_checkout=${AEH_CHECKOUT}; else aeh_checkout="/tmp/rhdh-agent-eval-harness-${AEH_VERSION}"; fi
 if [[ ! -f "${aeh_checkout}/skills/eval-run/scripts/execute.py" ]]; then
   if [[ -e ${aeh_checkout} ]]; then echo "AEH_CHECKOUT is not usable: ${aeh_checkout}" >&2; exit 1; fi

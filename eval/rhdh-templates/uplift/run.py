@@ -76,8 +76,6 @@ def main() -> int:
         str(output),
         "--run-id",
         args.run_id,
-        "--mlflow-experiment",
-        "rhdh-templates-uplift",
     ]
     if config_path.name == "skill.eval.yaml":
         execute_args.extend(["--skill", "rhdh-templates"])

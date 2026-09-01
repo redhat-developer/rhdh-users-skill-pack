@@ -17,8 +17,6 @@ def test_skill_and_baseline_use_the_same_reviewed_cases_and_fixture() -> None:
     assert skill["dataset"]["path"] == baseline["dataset"]["path"] == "cases"
     assert skill["dataset"]["workspace"] == baseline["dataset"]["workspace"]
     assert skill["dataset"]["workspace"]["files"] == ["fixture"]
-    assert skill["mlflow"]["experiment"] == "rhdh-templates-uplift"
-    assert baseline["mlflow"]["experiment"] == "rhdh-templates-uplift"
 
 
 def test_uplift_judge_enforces_confirmation_and_exact_modifications() -> None:
@@ -60,8 +58,8 @@ def test_baseline_judge_rejects_skill_consultation() -> None:
     assert not judges.check_baseline_is_skill_free(outputs)[0]
 
 
-def test_uplift_runner_requires_mlflow_and_three_attempts_by_default() -> None:
+def test_uplift_runner_uses_three_attempts_and_observed_comparison() -> None:
     command = (UPLIFT_ROOT / "run-local.sh").read_text(encoding="utf-8")
     assert "runs=3" in command
-    assert "MLFLOW_TRACKING_URI" in command
+    assert "runs=3" in command
     assert "compare.py" in command

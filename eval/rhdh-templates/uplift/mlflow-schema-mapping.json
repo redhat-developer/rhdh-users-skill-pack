@@ -1,8 +1,0 @@
-{
-  "inputs": {
-    "prompt": "input.yaml:prompt"
-  },
-  "expectations": {
-    "reviewed_contract": "annotations.yaml:__file__"
-  }
-}
