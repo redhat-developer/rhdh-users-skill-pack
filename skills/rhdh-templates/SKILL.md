@@ -1,5 +1,7 @@
 ---
 name: rhdh-templates
+metadata:
+  author: Kashish Mittal <kmittal@redhat.com>
 description: >-
   Author and validate RHDH Software Templates (Scaffolder) with AI-guided workflows. Use when
   asked to "create software template", "templatize a codebase", "convert repo to
