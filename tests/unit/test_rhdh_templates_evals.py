@@ -177,8 +177,11 @@ def test_local_judge_rejects_modified_fixture() -> None:
 def test_eval_config_and_case_are_portable_and_complete() -> None:
     configs = list(EVAL_ROOT.glob("**/eval.yaml"))
 
-    assert configs == [EVAL_ROOT / "behavior-local" / "eval.yaml"]
-    config_path = configs[0]
+    assert set(configs) == {
+        EVAL_ROOT / "behavior-local" / "eval.yaml",
+        EVAL_ROOT / "routing" / "eval.yaml",
+    }
+    config_path = EVAL_ROOT / "behavior-local" / "eval.yaml"
     text = config_path.read_text(encoding="utf-8")
     config = yaml.safe_load(text)
     cases_dir = config_path.parent / config["dataset"]["path"]

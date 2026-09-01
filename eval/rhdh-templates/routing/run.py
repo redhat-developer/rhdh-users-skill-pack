@@ -35,7 +35,17 @@ def run(script: Path, arguments: list[str], *, capture: bool = False) -> str:
 def main() -> int:
     args = parse_args()
     scripts = args.aeh_dir.resolve() / "skills" / "eval-run" / "scripts"
-    required = [scripts / name for name in ("preflight.py", "workspace.py", "execute.py", "collect.py", "score.py", "report.py")]
+    required = [
+        scripts / name
+        for name in (
+            "preflight.py",
+            "workspace.py",
+            "execute.py",
+            "collect.py",
+            "score.py",
+            "report.py",
+        )
+    ]
     if missing := [str(path) for path in required if not path.is_file()]:
         print(f"AEH checkout is missing pipeline scripts: {missing}", file=sys.stderr)
         return 2
@@ -48,7 +58,11 @@ def main() -> int:
         capture=True,
     )
     workspace = next(
-        (line.removeprefix("WORKSPACE: ") for line in workspace_output.splitlines() if line.startswith("WORKSPACE: ")),
+        (
+            line.removeprefix("WORKSPACE: ")
+            for line in workspace_output.splitlines()
+            if line.startswith("WORKSPACE: ")
+        ),
         "",
     )
     if not workspace:
@@ -56,9 +70,39 @@ def main() -> int:
         return 1
 
     output = Path("eval/runs/rhdh-templates-routing") / args.run_id
-    run(scripts / "execute.py", ["--config", str(config_path), "--workspace", workspace, "--model", args.model, "--output", str(output), "--run-id", args.run_id])
-    run(scripts / "collect.py", ["--config", str(config_path), "--workspace", workspace, "--output", str(output)])
-    run(scripts / "score.py", ["judges", "--run-id", args.run_id, "--config", str(config_path), "--workspace", workspace, "--model", args.model])
+    run(
+        scripts / "execute.py",
+        [
+            "--config",
+            str(config_path),
+            "--workspace",
+            workspace,
+            "--model",
+            args.model,
+            "--output",
+            str(output),
+            "--run-id",
+            args.run_id,
+        ],
+    )
+    run(
+        scripts / "collect.py",
+        ["--config", str(config_path), "--workspace", workspace, "--output", str(output)],
+    )
+    run(
+        scripts / "score.py",
+        [
+            "judges",
+            "--run-id",
+            args.run_id,
+            "--config",
+            str(config_path),
+            "--workspace",
+            workspace,
+            "--model",
+            args.model,
+        ],
+    )
     run(scripts / "report.py", ["--run-id", args.run_id, "--config", str(config_path)])
     print(output / "summary.yaml")
     return 0

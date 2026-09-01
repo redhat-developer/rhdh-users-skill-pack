@@ -18,7 +18,9 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def score_summary(summary_path: Path, cases_dir: Path) -> tuple[dict[str, int], list[str], list[str], list[str]]:
+def score_summary(
+    summary_path: Path, cases_dir: Path
+) -> tuple[dict[str, int], list[str], list[str], list[str]]:
     summary = yaml.safe_load(summary_path.read_text(encoding="utf-8")) or {}
     per_case = summary.get("per_case", {})
     counts = {"true_positive": 0, "true_negative": 0, "false_positive": 0, "false_negative": 0}
@@ -28,7 +30,9 @@ def score_summary(summary_path: Path, cases_dir: Path) -> tuple[dict[str, int], 
     for case_dir in sorted(cases_dir.iterdir()):
         if not case_dir.is_dir():
             continue
-        annotations = yaml.safe_load((case_dir / "annotations.yaml").read_text(encoding="utf-8")) or {}
+        annotations = (
+            yaml.safe_load((case_dir / "annotations.yaml").read_text(encoding="utf-8")) or {}
+        )
         expected = annotations.get("should_trigger")
         matched = per_case.get(case_dir.name, {}).get("activation_match", {}).get("value")
         if not isinstance(expected, bool) or not isinstance(matched, bool):
@@ -56,7 +60,9 @@ def main() -> int:
     precision_values: list[float] = []
     recall_values: list[float] = []
     for summary_path in summary_paths:
-        counts, false_positives, false_negatives, errors = score_summary(summary_path, args.cases_dir)
+        counts, false_positives, false_negatives, errors = score_summary(
+            summary_path, args.cases_dir
+        )
         predicted_positive = counts["true_positive"] + counts["false_positive"]
         actual_positive = counts["true_positive"] + counts["false_negative"]
         precision = counts["true_positive"] / predicted_positive if predicted_positive else 0.0

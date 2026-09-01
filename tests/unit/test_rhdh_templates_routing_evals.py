@@ -15,10 +15,35 @@ sys.path.insert(0, str(REPO_ROOT))
 
 
 def test_routing_matrix_covers_workflows_styles_and_near_misses() -> None:
-    expected_workflows = {"init", "templatize", "create", "add-parameter", "add-step", "add-skeleton", "create-location", "fix-gotchas", "validate", "list-actions", "dry-run", "explain-action", "examples"}
-    expected_negatives = {"upgrade-helper", "skill-maker", "backend-plugin", "kubernetes", "yaml-format", "rhdh-config"}
+    expected_workflows = {
+        "init",
+        "templatize",
+        "create",
+        "add-parameter",
+        "add-step",
+        "add-skeleton",
+        "create-location",
+        "fix-gotchas",
+        "validate",
+        "list-actions",
+        "dry-run",
+        "explain-action",
+        "examples",
+    }
+    expected_negatives = {
+        "upgrade-helper",
+        "skill-maker",
+        "backend-plugin",
+        "kubernetes",
+        "yaml-format",
+        "rhdh-config",
+    }
     cases = ROUTING_ROOT / "cases"
-    annotations = {case.name: yaml.safe_load((case / "annotations.yaml").read_text(encoding="utf-8")) for case in cases.iterdir() if case.is_dir()}
+    annotations = {
+        case.name: yaml.safe_load((case / "annotations.yaml").read_text(encoding="utf-8"))
+        for case in cases.iterdir()
+        if case.is_dir()
+    }
     positives = {value["category"] for value in annotations.values() if value["should_trigger"]}
     negatives = {
         case.split("-", 1)[1].removesuffix("-negative")
@@ -38,19 +63,57 @@ def test_routing_matrix_covers_workflows_styles_and_near_misses() -> None:
 
 def test_routing_judge_uses_trace_evidence_not_agent_claims() -> None:
     judges = importlib.import_module("eval.rhdh-templates.routing.judges")
-    assert judges.check_routing({"annotations": {"should_trigger": False}, "conversation": "I used rhdh-templates.", "events": []})[0]
+    assert judges.check_routing(
+        {
+            "annotations": {"should_trigger": False},
+            "conversation": "I used rhdh-templates.",
+            "events": [],
+        }
+    )[0]
     assert not judges.check_routing({"annotations": {"should_trigger": True}, "events": []})[0]
 
 
 def test_summary_reports_variance_and_named_misses(tmp_path: Path) -> None:
     cases = tmp_path / "cases"
-    for name, should_trigger in {"positive-hit": True, "positive-miss": True, "negative-hit": False, "negative-miss": False}.items():
+    for name, should_trigger in {
+        "positive-hit": True,
+        "positive-miss": True,
+        "negative-hit": False,
+        "negative-miss": False,
+    }.items():
         (cases / name).mkdir(parents=True)
-        (cases / name / "annotations.yaml").write_text(yaml.safe_dump({"should_trigger": should_trigger}), encoding="utf-8")
+        (cases / name / "annotations.yaml").write_text(
+            yaml.safe_dump({"should_trigger": should_trigger}), encoding="utf-8"
+        )
     summary = tmp_path / "summary.yaml"
-    summary.write_text(yaml.safe_dump({"per_case": {"positive-hit": {"activation_match": {"value": True}}, "positive-miss": {"activation_match": {"value": False}}, "negative-hit": {"activation_match": {"value": True}}, "negative-miss": {"activation_match": {"value": False}}}}), encoding="utf-8")
+    summary.write_text(
+        yaml.safe_dump(
+            {
+                "per_case": {
+                    "positive-hit": {"activation_match": {"value": True}},
+                    "positive-miss": {"activation_match": {"value": False}},
+                    "negative-hit": {"activation_match": {"value": True}},
+                    "negative-miss": {"activation_match": {"value": False}},
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
 
-    result = subprocess.run([sys.executable, ROUTING_ROOT / "summarize.py", "--summaries", summary, "--cases-dir", cases], cwd=REPO_ROOT, capture_output=True, text=True, check=False)
+    result = subprocess.run(
+        [
+            sys.executable,
+            ROUTING_ROOT / "summarize.py",
+            "--summaries",
+            summary,
+            "--cases-dir",
+            cases,
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
 
     assert result.returncode == 0, result.stderr
     assert "precision_mean: 0.500" in result.stdout
