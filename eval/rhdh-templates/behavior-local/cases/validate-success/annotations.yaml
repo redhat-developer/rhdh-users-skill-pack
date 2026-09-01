@@ -1,0 +1,2 @@
+case_kind: validate-success
+expected_template: expected/template.yaml

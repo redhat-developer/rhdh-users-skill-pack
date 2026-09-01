@@ -1,0 +1,40 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: minimal-example
+  title: Minimal Example Template
+  description: Starter template scaffolded by rhdh-templates init
+  tags:
+    - example
+spec:
+  owner: group:default/platform-team
+  type: service
+  parameters:
+    - title: Component details
+      required:
+        - componentId
+        - owner
+      properties:
+        componentId:
+          title: Component ID
+          type: string
+          pattern: '^[a-z0-9-]*[a-z0-9]$'
+          description: Unique ID for the new component
+          ui:help: Lowercase letters, digits, and dashes only
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+        owner:
+          title: Owner
+          type: string
+          ui:field: EntityPicker
+  steps:
+    - id: fetch-base
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          componentId: ${{ parameters.componentId }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
