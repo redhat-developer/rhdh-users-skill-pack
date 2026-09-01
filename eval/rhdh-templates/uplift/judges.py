@@ -20,10 +20,7 @@ def check_baseline_is_skill_free(outputs: dict[str, Any]) -> tuple[bool, str]:
             elif tool.get("name") == "Bash":
                 values.extend(tool_input.get("read_paths", []))
                 values.append(tool_input.get("command", ""))
-            if any(
-                SKILL_PATH_SUFFIX in str(value).replace("\\", "/").lower()
-                for value in values
-            ):
+            if any(SKILL_PATH_SUFFIX in str(value).replace("\\", "/").lower() for value in values):
                 return False, "baseline trace consulted rhdh-templates/SKILL.md"
     return True, "baseline trace did not consult rhdh-templates/SKILL.md"
 
