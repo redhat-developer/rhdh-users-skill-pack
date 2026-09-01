@@ -26,9 +26,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def run_step(
-    label: str, script: Path, arguments: list[str], *, capture: bool = False
-) -> str:
+def run_step(label: str, script: Path, arguments: list[str], *, capture: bool = False) -> str:
     print(f"\n==> {label}", file=sys.stderr, flush=True)
     result = subprocess.run(
         [sys.executable, str(script), *arguments],
@@ -77,8 +75,7 @@ def main() -> int:
         print("No model configured; pass --model or set models.skill", file=sys.stderr)
         return 2
     run_id = args.run_id or (
-        datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ-")
-        + model.replace("/", "-")
+        datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ-") + model.replace("/", "-")
     )
     if not re.fullmatch(r"[A-Za-z0-9._-]+", run_id):
         print(f"Invalid run id: {run_id!r}", file=sys.stderr)
@@ -98,9 +95,7 @@ def main() -> int:
     workspace_args = ["--config", str(config_path), "--run-id", run_id]
     if args.cases:
         workspace_args.extend(["--cases", *args.cases])
-    workspace_stdout = run_step(
-        "workspace", scripts / "workspace.py", workspace_args, capture=True
-    )
+    workspace_stdout = run_step("workspace", scripts / "workspace.py", workspace_args, capture=True)
     workspace = next(
         (
             line.removeprefix("WORKSPACE: ").strip()

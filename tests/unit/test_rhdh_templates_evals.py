@@ -47,9 +47,7 @@ def test_local_runner_isolates_codex_home_and_removes_the_copy(
     fake_bin.mkdir()
     fake_uv = fake_bin / "uv"
     fake_uv.write_text(
-        "#!/usr/bin/env bash\n"
-        "printf '%s\\n' \"${CODEX_HOME}\"\n"
-        "test -f \"${CODEX_HOME}/auth.json\"\n"
+        '#!/usr/bin/env bash\nprintf \'%s\\n\' "${CODEX_HOME}"\ntest -f "${CODEX_HOME}/auth.json"\n'
     )
     fake_uv.chmod(0o755)
 
@@ -119,10 +117,7 @@ def _valid_outputs() -> dict:
             {
                 "type": "tool_result",
                 "tool_use_id": "validate-1",
-                "content": (
-                    "shell initialization warning\n"
-                    '{"ok": true, "critical_count": 0}\n'
-                ),
+                "content": ('shell initialization warning\n{"ok": true, "critical_count": 0}\n'),
                 "is_error": False,
             },
         ],
