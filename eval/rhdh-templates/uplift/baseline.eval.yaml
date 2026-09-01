@@ -1,0 +1,48 @@
+name: rhdh-templates-uplift-baseline
+description: Evaluate the same representative tasks without loading rhdh-templates.
+
+execution:
+  mode: case
+  prompt: "{{ input.prompt }}"
+  timeout: 1200
+  parallelism: 1
+
+runner:
+  type: codex
+  effort: high
+  system_prompt: |
+    Solve the task using general knowledge. Do not read or use any file under
+    skills/rhdh-templates; this run is the without-skill baseline.
+
+models:
+  skill: gpt-5.6-luna
+  judge: gpt-5.6-luna
+
+mlflow:
+  experiment: rhdh-templates-uplift
+
+dataset:
+  path: cases
+  workspace:
+    files:
+      - fixture
+  schema: |
+    The same reviewed authoring tasks used by the skill arm.
+
+outputs:
+  - path: output
+    schema: Diagnostic artifacts requested by each case.
+
+traces:
+  stdout: true
+  stderr: true
+  events: true
+  metrics: true
+
+judges:
+  - name: task_contract
+    module: eval.rhdh-templates.uplift.judges
+    function: check_uplift_behavior
+  - name: baseline_skill_isolation
+    module: eval.rhdh-templates.uplift.judges
+    function: check_baseline_is_skill_free

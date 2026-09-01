@@ -1,0 +1,5 @@
+prompt: |
+  Analyze `fixture/service` as a candidate RHDH Software Template. Propose which
+  repository values should become template parameters and which files should
+  remain static. Do not modify the source before I confirm the mappings. Write
+  the proposal to `output/proposal.md` and stop for confirmation.

@@ -1,0 +1,8 @@
+case_kind: expected-modifications
+expected_readme: expected/README.md
+expected_workflow: expected/ci.yaml
+expected_modified:
+  - path: fixture/raw-template/skeleton/README.md
+    content_key: expected_readme
+  - path: fixture/raw-template/skeleton/.github/workflows/ci.yaml
+    content_key: expected_workflow
