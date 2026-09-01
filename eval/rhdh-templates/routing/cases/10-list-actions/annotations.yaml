@@ -1,0 +1,3 @@
+should_trigger: true
+category: list-actions
+rationale: Lists installed actions from RHDH.

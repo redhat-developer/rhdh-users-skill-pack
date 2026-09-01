@@ -1,0 +1,3 @@
+should_trigger: true
+category: fix-gotchas
+rationale: Repairs known RHDH Software Template gotchas.

@@ -1,0 +1,4 @@
+should_trigger: true
+category: templatize
+style: explicit
+rationale: Converts an existing repository while respecting the confirmation gate.

@@ -1,0 +1,46 @@
+name: rhdh-templates-routing
+description: Measure rhdh-templates activation across advertised workflows and near-misses.
+
+execution:
+  mode: case
+  prompt: "{{ input.prompt }}"
+  timeout: 600
+  parallelism: 1
+
+runner:
+  type: codex
+  effort: high
+  plugin_dirs:
+    - .
+
+models:
+  skill: gpt-5.6-luna
+  judge: gpt-5.6-luna
+
+dataset:
+  path: cases
+  schema: |
+    Each case contains input.yaml with a user prompt and annotations.yaml with
+    should_trigger, category, rationale, and optional prompt style.
+
+traces:
+  stdout: true
+  stderr: true
+  events: true
+  metrics: true
+
+judges:
+  - name: activation_match
+    description: Activation observed in the trace matches the reviewed expectation.
+    module: eval.rhdh-templates.routing.judges
+    function: check_routing
+  - name: positive_activation
+    description: Relevant prompts activate rhdh-templates.
+    if: "annotations.get('should_trigger') is True"
+    module: eval.rhdh-templates.routing.judges
+    function: check_routing
+  - name: negative_avoidance
+    description: Near-miss prompts avoid rhdh-templates.
+    if: "annotations.get('should_trigger') is False"
+    module: eval.rhdh-templates.routing.judges
+    function: check_routing

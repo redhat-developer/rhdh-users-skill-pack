@@ -1,0 +1,3 @@
+should_trigger: false
+category: unrelated
+rationale: Kubernetes manifest authoring does not require rhdh-templates.

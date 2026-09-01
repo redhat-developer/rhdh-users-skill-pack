@@ -1,0 +1,3 @@
+should_trigger: false
+category: near-miss
+rationale: General RHDH application configuration is outside Software Template authoring.

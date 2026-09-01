@@ -1,0 +1,4 @@
+should_trigger: true
+category: create-location
+style: ambiguous
+rationale: Creates catalog registration for Software Templates.

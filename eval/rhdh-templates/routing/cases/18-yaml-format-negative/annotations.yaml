@@ -1,0 +1,3 @@
+should_trigger: false
+category: unrelated
+rationale: Generic YAML formatting does not require rhdh-templates.
