@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import math
 import statistics
 from pathlib import Path
 
@@ -15,7 +16,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--summary", type=Path)
     parser.add_argument("--summaries", type=Path, nargs="+")
     parser.add_argument("--cases-dir", type=Path, required=True)
-    return parser.parse_args()
+    parser.add_argument("--min-precision", type=float)
+    parser.add_argument("--min-recall", type=float)
+    args = parser.parse_args()
+    for name in ("min_precision", "min_recall"):
+        value = getattr(args, name)
+        if value is not None and (not math.isfinite(value) or not 0 <= value <= 1):
+            parser.error(f"--{name.replace('_', '-')} must be a finite number between 0 and 1")
+    return args
 
 
 def score_summary(
@@ -59,6 +67,7 @@ def main() -> int:
         raise SystemExit("pass --summary or --summaries")
     precision_values: list[float] = []
     recall_values: list[float] = []
+    case_results: dict[str, list[bool]] = {}
     for summary_path in summary_paths:
         counts, false_positives, false_negatives, errors = score_summary(
             summary_path, args.cases_dir
@@ -69,6 +78,11 @@ def main() -> int:
         recall = counts["true_positive"] / actual_positive if actual_positive else 0.0
         precision_values.append(precision)
         recall_values.append(recall)
+        per_case = yaml.safe_load(summary_path.read_text(encoding="utf-8")).get("per_case", {})
+        for case_name, case_data in per_case.items():
+            matched = case_data.get("activation_match", {}).get("value")
+            if isinstance(matched, bool):
+                case_results.setdefault(case_name, []).append(matched)
         print(f"{summary_path.name}: precision={precision:.3f} recall={recall:.3f}")
         for name, value in counts.items():
             print(f"  {name}: {value}")
@@ -83,7 +97,24 @@ def main() -> int:
     print(f"precision_mean: {statistics.mean(precision_values):.3f}")
     print(f"precision_variance: {statistics.pvariance(precision_values):.6f}")
     print(f"recall_mean: {statistics.mean(recall_values):.3f}")
+    recall_mean = statistics.mean(recall_values)
+    precision_mean = statistics.mean(precision_values)
     print(f"recall_variance: {statistics.pvariance(recall_values):.6f}")
+    if len(summary_paths) > 1:
+        print("case_stability:")
+        for case_name in sorted(case_results):
+            values = case_results[case_name]
+            print(
+                f"  {case_name}: mean={statistics.mean(values):.3f} variance={statistics.pvariance(values):.6f}"
+            )
+    failures = []
+    if args.min_precision is not None and precision_mean < args.min_precision:
+        failures.append(f"precision {precision_mean:.3f} < {args.min_precision:.3f}")
+    if args.min_recall is not None and recall_mean < args.min_recall:
+        failures.append(f"recall {recall_mean:.3f} < {args.min_recall:.3f}")
+    if failures:
+        print("threshold_failed: " + "; ".join(failures))
+        return 1
     return 0
 
 

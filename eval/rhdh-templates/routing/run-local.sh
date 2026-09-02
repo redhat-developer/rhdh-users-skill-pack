@@ -9,7 +9,7 @@ readonly MODEL="gpt-5.6-luna"
 
 usage() {
   cat <<'EOF'
-Usage: ./eval/rhdh-templates/routing/run-local.sh [--runs COUNT]
+Usage: ./eval/rhdh-templates/routing/run-local.sh [--runs COUNT] [--min-precision VALUE] [--min-recall VALUE]
 
 Runs the reviewed routing matrix through Agent Eval Harness with the pinned
 reference model. The default three runs report activation precision, recall,
@@ -21,18 +21,19 @@ EOF
 }
 
 runs=3
+min_precision=1.00
+min_recall=0.95
 if [[ ${1:-} == "--help" || ${1:-} == "-h" ]]; then
   usage
   exit 0
 fi
-if [[ ${1:-} == "--runs" && ${2:-} =~ ^[1-9][0-9]*$ ]]; then
-  runs=$2
-  shift 2
-fi
-if [[ $# -ne 0 ]]; then
-  usage >&2
-  exit 2
-fi
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --runs) [[ ${2:-} =~ ^[1-9][0-9]*$ ]] || { usage >&2; exit 2; }; runs=$2; shift 2 ;;
+    --min-precision|--min-recall) [[ ${2:-} =~ ^(0|[01])(\.[0-9]+)?$ ]] || { usage >&2; exit 2; }; if [[ $1 == "--min-precision" ]]; then min_precision=$2; else min_recall=$2; fi; shift 2 ;;
+    *) usage >&2; exit 2 ;;
+  esac
+done
 
 if [[ -n ${AEH_CHECKOUT:-} ]]; then
   aeh_checkout=${AEH_CHECKOUT}
@@ -57,4 +58,5 @@ for index in $(seq 1 "${runs}"); do
     --aeh-dir "${aeh_checkout}" --config "${CONFIG}" --model "${MODEL}" --run-id "${run_id}"
   summaries+=("eval/runs/rhdh-templates-routing/${run_id}/summary.yaml")
 done
-python "${SCRIPT_DIR}/summarize.py" --summaries "${summaries[@]}" --cases-dir "${SCRIPT_DIR}/cases"
+python "${SCRIPT_DIR}/summarize.py" --summaries "${summaries[@]}" --cases-dir "${SCRIPT_DIR}/cases" \
+  --min-precision "${min_precision}" --min-recall "${min_recall}"
