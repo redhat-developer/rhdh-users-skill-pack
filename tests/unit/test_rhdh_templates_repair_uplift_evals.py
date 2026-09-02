@@ -60,7 +60,13 @@ def test_repair_judge_requires_exact_repair_and_clean_validation() -> None:
             {
                 "type": "assistant",
                 "tools": [
-                    {"id": "validate", "name": "Bash", "input": {"command": "validate.py --json"}}
+                    {
+                        "id": "validate",
+                        "name": "Bash",
+                        "input": {
+                            "command": "python skills/rhdh-templates/scripts/validate.py fixture/invalid-template/template.yaml --json"
+                        },
+                    }
                 ],
             },
             {

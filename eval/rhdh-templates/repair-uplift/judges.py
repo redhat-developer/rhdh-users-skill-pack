@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import json
+import re
+import shlex
 from typing import Any
 
-SKILL_PATH_SUFFIX = "skills/rhdh-templates/skill.md"
+SKILL_ROOT_PATTERN = re.compile(r"(?:^|[\s'\"/])skills[/\\]rhdh-templates(?:[/\\]|$)", re.I)
 
 
 def _observed_commands(outputs: dict[str, Any]) -> list[tuple[str, str, bool]]:
@@ -33,7 +35,15 @@ def _observed_commands(outputs: dict[str, Any]) -> list[tuple[str, str, bool]]:
 
 def _clean_validation_was_observed(outputs: dict[str, Any]) -> bool:
     for command, content, is_error in _observed_commands(outputs):
-        if "validate.py" not in command or is_error:
+        try:
+            tokens = shlex.split(command)
+        except ValueError:
+            continue
+        if is_error or not any(
+            token.endswith("skills/rhdh-templates/scripts/validate.py") for token in tokens
+        ):
+            continue
+        if "--json" not in tokens or "fixture/invalid-template/template.yaml" not in tokens:
             continue
         try:
             result = json.loads(content)
@@ -77,6 +87,6 @@ def check_baseline_is_skill_free(outputs: dict[str, Any]) -> tuple[bool, str]:
             elif tool.get("name") == "Bash":
                 values.extend(tool_input.get("read_paths", []))
                 values.append(tool_input.get("command", ""))
-            if any(SKILL_PATH_SUFFIX in str(value).replace("\\", "/").lower() for value in values):
-                return False, "baseline trace consulted rhdh-templates/SKILL.md"
-    return True, "baseline trace did not consult rhdh-templates/SKILL.md"
+            if any(SKILL_ROOT_PATTERN.search(str(value)) for value in values):
+                return False, "baseline trace consulted the rhdh-templates skill root"
+    return True, "baseline trace did not consult the rhdh-templates skill root"

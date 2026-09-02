@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
-SKILL_PATH_SUFFIX = "skills/rhdh-templates/skill.md"
+SKILL_ROOT_PATTERN = re.compile(r"(?:^|[\s'\"/])skills[/\\]rhdh-templates(?:[/\\]|$)", re.I)
 
 
 def check_baseline_is_skill_free(outputs: dict[str, Any]) -> tuple[bool, str]:
@@ -20,9 +21,9 @@ def check_baseline_is_skill_free(outputs: dict[str, Any]) -> tuple[bool, str]:
             elif tool.get("name") == "Bash":
                 values.extend(tool_input.get("read_paths", []))
                 values.append(tool_input.get("command", ""))
-            if any(SKILL_PATH_SUFFIX in str(value).replace("\\", "/").lower() for value in values):
-                return False, "baseline trace consulted rhdh-templates/SKILL.md"
-    return True, "baseline trace did not consult rhdh-templates/SKILL.md"
+            if any(SKILL_ROOT_PATTERN.search(str(value)) for value in values):
+                return False, "baseline trace consulted the rhdh-templates skill root"
+    return True, "baseline trace did not consult the rhdh-templates skill root"
 
 
 def check_uplift_behavior(outputs: dict[str, Any]) -> tuple[bool, str]:

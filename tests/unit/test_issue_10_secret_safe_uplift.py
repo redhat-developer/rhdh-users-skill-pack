@@ -77,7 +77,9 @@ def test_secret_safe_step_baseline_trace_must_not_consult_the_skill() -> None:
                     "tools": [
                         {
                             "name": "Bash",
-                            "input": {"command": "cat skills/rhdh-templates/SKILL.md"},
+                            "input": {
+                                "command": "cat skills/rhdh-templates/references/best-practices.md"
+                            },
                         }
                     ],
                 }
