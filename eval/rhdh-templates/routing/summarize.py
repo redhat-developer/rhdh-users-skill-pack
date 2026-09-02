@@ -22,7 +22,7 @@ def parse_args() -> argparse.Namespace:
     for name in ("min_precision", "min_recall"):
         value = getattr(args, name)
         if value is not None and (not math.isfinite(value) or not 0 <= value <= 1):
-            parser.error(f"--{name.replace('_', '-') } must be a finite number between 0 and 1")
+            parser.error(f"--{name.replace('_', '-')} must be a finite number between 0 and 1")
     return args
 
 
@@ -104,7 +104,9 @@ def main() -> int:
         print("case_stability:")
         for case_name in sorted(case_results):
             values = case_results[case_name]
-            print(f"  {case_name}: mean={statistics.mean(values):.3f} variance={statistics.pvariance(values):.6f}")
+            print(
+                f"  {case_name}: mean={statistics.mean(values):.3f} variance={statistics.pvariance(values):.6f}"
+            )
     failures = []
     if args.min_precision is not None and precision_mean < args.min_precision:
         failures.append(f"precision {precision_mean:.3f} < {args.min_precision:.3f}")
