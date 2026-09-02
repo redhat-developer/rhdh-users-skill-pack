@@ -1,0 +1,19 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: publish-example
+  tags:
+    - github
+spec:
+  owner: group:default/platform
+  type: service
+  parameters:
+    - title: Repository
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository location
+          type: string
+          ui:field: RepoUrlPicker
+  steps: []

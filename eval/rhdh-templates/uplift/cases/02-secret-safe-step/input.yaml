@@ -1,0 +1,4 @@
+prompt: |
+  Modify `fixture/template/template.yaml` to add a step with id `publish`, action
+  `publish:github`, and input `repoUrl: ${{ parameters.repoUrl }}`. Do not add a
+  token, password, or literal credential. Make no other changes.

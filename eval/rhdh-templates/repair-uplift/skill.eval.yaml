@@ -1,0 +1,41 @@
+name: rhdh-templates-repair-uplift-skill
+description: Evaluate invalid-template repair with rhdh-templates explicitly invoked.
+
+execution:
+  mode: case
+  skill: rhdh-templates
+  arguments: "{{ input.prompt }}"
+  timeout: 1200
+  parallelism: 1
+
+runner:
+  type: codex
+  effort: high
+  plugin_dirs:
+    - .
+
+models:
+  skill: gpt-5.6-luna
+  judge: gpt-5.6-luna
+
+dataset:
+  path: cases
+  workspace:
+    files:
+      - fixture
+  schema: Reviewed invalid RHDH Software Template repair task.
+
+outputs:
+  - path: output
+    schema: Validation evidence requested by the case.
+
+traces:
+  stdout: true
+  stderr: true
+  events: true
+  metrics: true
+
+judges:
+  - name: repaired_template
+    module: eval.rhdh-templates.repair-uplift.judges
+    function: check_repair

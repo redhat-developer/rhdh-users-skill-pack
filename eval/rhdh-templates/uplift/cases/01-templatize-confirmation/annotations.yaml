@@ -1,0 +1,6 @@
+case_kind: confirmation-gate
+required_proposal_markers:
+  - serviceName
+  - owner
+  - Dockerfile
+  - confirmation

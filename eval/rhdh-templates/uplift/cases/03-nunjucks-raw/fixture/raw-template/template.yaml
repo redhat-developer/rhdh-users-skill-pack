@@ -1,0 +1,22 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: raw-example
+  tags:
+    - github
+spec:
+  owner: group:default/platform
+  type: service
+  parameters:
+    - title: Component
+      properties:
+        componentId:
+          title: Component ID
+          type: string
+  steps:
+    - id: fetch
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          componentId: ${{ parameters.componentId }}
