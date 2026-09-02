@@ -123,6 +123,37 @@ def test_summary_reports_variance_and_named_misses(tmp_path: Path) -> None:
     assert "false_negatives: positive-miss" in result.stdout
 
 
+def test_summary_fails_when_approved_threshold_is_violated(tmp_path: Path) -> None:
+    cases = tmp_path / "cases"
+    (cases / "positive").mkdir(parents=True)
+    (cases / "positive" / "annotations.yaml").write_text(
+        yaml.safe_dump({"should_trigger": True}), encoding="utf-8"
+    )
+    summary = tmp_path / "summary.yaml"
+    summary.write_text(
+        yaml.safe_dump({"per_case": {"positive": {"activation_match": {"value": False}}}}),
+        encoding="utf-8",
+    )
+    result = subprocess.run(
+        [
+            sys.executable,
+            ROUTING_ROOT / "summarize.py",
+            "--summary",
+            summary,
+            "--cases-dir",
+            cases,
+            "--min-recall",
+            "0.5",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 1
+    assert "threshold_failed" in result.stdout
+
+
 def test_local_command_defaults_to_three_runs_and_has_candidate_guidance() -> None:
     command = (ROUTING_ROOT / "run-local.sh").read_text(encoding="utf-8")
     candidates = (ROUTING_ROOT / "candidates" / "README.md").read_text(encoding="utf-8")

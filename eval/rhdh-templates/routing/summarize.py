@@ -15,6 +15,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--summary", type=Path)
     parser.add_argument("--summaries", type=Path, nargs="+")
     parser.add_argument("--cases-dir", type=Path, required=True)
+    parser.add_argument("--min-precision", type=float)
+    parser.add_argument("--min-recall", type=float)
     return parser.parse_args()
 
 
@@ -83,7 +85,17 @@ def main() -> int:
     print(f"precision_mean: {statistics.mean(precision_values):.3f}")
     print(f"precision_variance: {statistics.pvariance(precision_values):.6f}")
     print(f"recall_mean: {statistics.mean(recall_values):.3f}")
+    recall_mean = statistics.mean(recall_values)
+    precision_mean = statistics.mean(precision_values)
     print(f"recall_variance: {statistics.pvariance(recall_values):.6f}")
+    failures = []
+    if args.min_precision is not None and precision_mean < args.min_precision:
+        failures.append(f"precision {precision_mean:.3f} < {args.min_precision:.3f}")
+    if args.min_recall is not None and recall_mean < args.min_recall:
+        failures.append(f"recall {recall_mean:.3f} < {args.min_recall:.3f}")
+    if failures:
+        print("threshold_failed: " + "; ".join(failures))
+        return 1
     return 0
 
 

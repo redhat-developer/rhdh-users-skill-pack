@@ -1,1 +1,4 @@
-prompt: Ask my RHDH instance which Scaffolder actions are installed before I choose a template step.
+prompt: >-
+  Use the rhdh-templates list-actions workflow locally to tell me which
+  Scaffolder actions are installed before I choose a template step. Do not use
+  browser or rhdh-local guidance; this is a local skill-routing task.
