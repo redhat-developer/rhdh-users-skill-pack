@@ -1,0 +1,5 @@
+prompt: |
+  Repair only the templating hazards under `fixture/raw-template/skeleton`.
+  Change the bare Nunjucks value in README.md to RHDH `${{ values.componentId }}`
+  syntax. Preserve the literal GitHub Actions `${{ github.ref }}` expression in
+  the workflow with a Nunjucks raw block. Do not change template.yaml.

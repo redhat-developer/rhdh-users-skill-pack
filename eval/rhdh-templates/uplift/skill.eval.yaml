@@ -1,0 +1,43 @@
+name: rhdh-templates-uplift-skill
+description: Evaluate representative tasks with rhdh-templates explicitly invoked.
+
+execution:
+  mode: case
+  skill: rhdh-templates
+  arguments: "{{ input.prompt }}"
+  timeout: 1200
+  parallelism: 1
+
+runner:
+  type: codex
+  effort: high
+  plugin_dirs:
+    - .
+
+models:
+  skill: gpt-5.6-luna
+  judge: gpt-5.6-luna
+
+dataset:
+  path: cases
+  workspace:
+    files:
+      - fixture
+  schema: |
+    Reviewed authoring tasks with isolated input repositories and exact expected
+    modifications or confirmation-gate evidence.
+
+outputs:
+  - path: output
+    schema: Diagnostic artifacts requested by each case.
+
+traces:
+  stdout: true
+  stderr: true
+  events: true
+  metrics: true
+
+judges:
+  - name: task_contract
+    module: eval.rhdh-templates.uplift.judges
+    function: check_uplift_behavior

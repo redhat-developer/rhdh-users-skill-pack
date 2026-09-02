@@ -1,0 +1,44 @@
+name: rhdh-templates-repair-uplift-baseline
+description: Evaluate the same invalid-template repair without rhdh-templates.
+
+execution:
+  mode: case
+  prompt: "{{ input.prompt }}"
+  timeout: 1200
+  parallelism: 1
+
+runner:
+  type: codex
+  effort: high
+  system_prompt: |
+    Solve the task using general knowledge. Do not read or use any file under
+    skills/rhdh-templates; this run is the without-skill baseline.
+
+models:
+  skill: gpt-5.6-luna
+  judge: gpt-5.6-luna
+
+dataset:
+  path: cases
+  workspace:
+    files:
+      - fixture
+  schema: The same reviewed invalid-template repair task as the skill arm.
+
+outputs:
+  - path: output
+    schema: Validation evidence requested by the case.
+
+traces:
+  stdout: true
+  stderr: true
+  events: true
+  metrics: true
+
+judges:
+  - name: repaired_template
+    module: eval.rhdh-templates.repair-uplift.judges
+    function: check_repair
+  - name: baseline_skill_isolation
+    module: eval.rhdh-templates.repair-uplift.judges
+    function: check_baseline_is_skill_free
