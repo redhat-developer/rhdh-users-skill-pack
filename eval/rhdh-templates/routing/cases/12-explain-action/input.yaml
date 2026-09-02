@@ -1,4 +1,1 @@
-prompt: >-
-  Use the rhdh-templates explain-action workflow locally to explain the input
-  schema for the catalog:register Scaffolder action. Do not use browser or
-  rhdh-local guidance; this is a local skill-routing task.
+prompt: Explain the input schema for the catalog:register Scaffolder action installed in my RHDH instance.

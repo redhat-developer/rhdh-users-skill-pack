@@ -6,27 +6,25 @@ that `skills/rhdh-templates/SKILL.md` was read.
 
 The original pre-change pilot (`routing-pilot-01`) scored 0.895 overall
 activation-match accuracy, with `10-list-actions` and `12-explain-action` as
-false negatives. After making those prompts explicitly local and
-skill-scoped, three fresh pilots—`routing-20260902T143643Z-1`,
-`routing-20260902T143643Z-2`, and `routing-20260902T143643Z-3`—each scored
-1.000 activation-match accuracy, precision, recall, and negative avoidance.
-Precision and recall variance were both 0.000000, with no false positives or
-false negatives.
+false negatives. Those cases remain natural-language routing prompts; the
+directly skill-scoped reruns were discarded as non-comparable evidence. The
+three retained pilot summaries are reviewed by the summarizer, which reports
+per-case outcomes and variance for all 19 cases. Threshold adoption is
+deliberately deferred until three fresh pilots using these natural prompts are
+available.
 
 ## Trace investigation decision
 
 The pre-change misses were workflow-boundary failures: `list-actions` often
 selected browser/`rhdh-local` guidance, while `explain-action` selected general
-RHDH references. The skill description already named both workflows, so the
-minimal effective change was to make the two prompts explicitly local and
-skill-scoped. The post-change pilots show the misses are resolved for this
-reviewed matrix and model.
+RHDH references. The skill description already names both workflows. The
+review therefore keeps the prompts natural and treats the prior direct-invocation
+reruns as a separate experiment rather than evidence of routing uplift.
 
-The post-change evidence supports a provisional routing threshold of precision
-`1.00` and recall `0.95` for this reviewed matrix and pinned model. This is a
-pilot guardrail, not a product-wide SLO; any future miss should trigger review.
-The local summarizer enforces an explicitly supplied threshold and returns
-nonzero when it is violated.
+No routing threshold is approved yet. Once three comparable natural-prompt
+pilots are reviewed, the maintainer will either approve a threshold or record
+an explicit deferral. The local command defaults to the approved values only
+when they are set and returns nonzero when a supplied threshold is violated.
 
 Run three distinct pilots and review them with:
 
