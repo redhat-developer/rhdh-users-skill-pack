@@ -24,21 +24,26 @@
 
 ### Uplift
 
-- Four representative tasks, with three retained attempts for each skill and
-  baseline arm: confirmation gating, secret-safe integration, Nunjucks raw
-  block repair, and invalid-template repair.
-- Contract pass results for the completed skill arm were respectively: `3/3`,
-  `1/3`, `2/3`, `0/3`. Therefore skill `pass@3` was `1, 1, 1, 0` and skill
-  `pass^3` was `1, 0, 0, 0`. The expanded baseline comparison was
-  stopped before completion, so no new baseline delta is claimed.
-- The overall skill-arm contract pass rate was `6/12` (`0.50`).
+- Four representative tasks with three retained skill-arm attempts each:
+  confirmation gating (`01-templatize-confirmation`), secret-safe integration
+  (`02-secret-safe-step`), Nunjucks raw block repair (`03-nunjucks-raw`), and
+  invalid-template repair (`05-invalid-template-repair`).
+- The expanded baseline comparison was stopped before completion, so no new
+  baseline delta is claimed for this pilot.
+- Contract pass results for the skill arm were respectively: `3/3`, `1/3`,
+  `2/3`, `0/3`. Therefore skill `pass@3` was `1, 1, 1, 0` and skill `pass^3`
+  was `1, 0, 0, 0`. The overall skill-arm contract pass rate was `6/12`
+  (`0.50`).
 - Bounded conclusions: confirmation gating passed in this pilot; secret-safe and
-  Nunjucks behavior remained variable; diagnose-and-repair and the integrated
-  invalid-template case did not match its exact reviewed artifact. A future
-  repair contract should decide whether equivalent valid repairs are acceptable
-  instead of requiring one exact serialization.
+  Nunjucks behavior remained variable; invalid-template repair did not match its
+  exact reviewed artifact. A future repair contract should decide whether
+  equivalent valid repairs are acceptable instead of requiring one exact
+  serialization.
+- Skill documentation was hardened after this pilot to address confirmation,
+  credential-safety, and surgical `add-step` behavior. Re-run the uplift suite
+  to measure post-fix skill-arm results.
 - No uplift threshold is approved; the evidence is mixed or regressive.
-- Reproduce the local comparison with:
+- Reproduce locally with:
 
   ```bash
   ./eval/rhdh-templates/uplift/run-local.sh --runs 3
@@ -49,10 +54,10 @@
 - Results are model-, release-, prompt-, fixture-, and date-specific.
 - Local AEH artifacts are reproducible sources; this card is an aggregate
   summary, not a substitute for raw traces during investigation.
-- Efficiency observations were descriptive: skill output tokens/turn were
-  `2405.0`, `2373.5`, `2605.5`; baseline values were `1406.8`, `1380.0`,
-  `1432.2`. Command count and loop detection remain secondary guardrails; no cost
-  or latency claim is made.
+- Efficiency observations from the completed skill attempts were descriptive:
+  output tokens per turn of `3,005.2`, `2,869.0`, and `2,703.4` across the
+  three uplift runs. Command count and loop detection remain secondary
+  guardrails; no cost or latency claim is made.
 - No commercial support entitlement, product-wide quality guarantee, or broad
   uplift claim follows from these evaluations.
 - MLflow storage is intentionally deferred; no MLflow database is required.

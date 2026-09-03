@@ -87,7 +87,7 @@ def check_uplift_behavior(outputs: dict[str, Any]) -> tuple[bool, str]:
                     token.endswith("skills/rhdh-templates/scripts/validate.py") for token in tokens
                 ):
                     continue
-                if "--json" not in tokens or "fixture/invalid-template/template.yaml" not in tokens:
+                if "--json" not in tokens or path not in tokens:
                     continue
                 result = next(
                     (

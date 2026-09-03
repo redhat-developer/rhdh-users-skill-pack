@@ -88,6 +88,10 @@ Never collect credentials with a plain `type: string` text field. Use Backstage'
 
 Secrets are masked in the form, review screen, and logs. In steps, reference integration secrets (e.g. `${{ secrets.user.github.token }}`) — never hardcode tokens. Exact secret paths depend on configured integrations; confirm against your RHDH instance. `fix-gotchas` flags obvious hardcoded tokens in step inputs.
 
+When adding a `publish:github` (or similar) step to an existing template, wire
+`repoUrl` and other inputs to parameters that already exist. Do not invent tokens
+or add Secret parameters unless the user explicitly asks for credential collection.
+
 ## 8. Specify template type and tags
 
 `spec.type` is required but often left as generic `service`. Set a meaningful type (`website`, `microservice`, `library`, `infrastructure`) so the Create UI groups templates. Add `metadata.tags` for subcategory filtering.

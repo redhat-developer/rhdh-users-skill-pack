@@ -13,19 +13,24 @@ workflow adherence (the baseline skill-isolation judge).
 | Nunjucks raw block | 2/3 | not run | 0.222 | — | Skill was mostly successful in this pilot. |
 | Invalid-template repair | 0/3 | not run | 0.000 | — | Skill repaired structure but did not match the exact reviewed artifact. |
 
-Baseline results for the expanded four-case suite are unavailable because that
-pilot was stopped after the skill arm. Efficiency metrics from the completed
-skill attempts were output tokens per turn of 3,005.2, 2,869.0, and 2,703.4;
-these are descriptive only.
+Baseline results for the four-case suite are unavailable because that pilot was
+stopped after the skill arm. Efficiency metrics from the completed skill attempts
+were output tokens per turn of `3,005.2`, `2,869.0`, and `2,703.4`; these are
+descriptive only.
+
+Skill documentation was hardened after this pilot (confirmation proposal content,
+surgical `add-step`, credential safety). Re-run `./eval/rhdh-templates/uplift/run-local.sh --runs 3`
+before treating secret-safe or repair results as current.
 
 ## Threshold decision
 
-No uplift threshold is justified by these retained results. The evidence is
-mixed or regressive for three tasks and shows no effect for the fourth. Future
-thresholds require additional reviewed attempts and a pre-declared task-level
-decision rule; this review makes no broader claim about the skill.
+No uplift threshold is justified by these retained results. The skill arm was
+inconsistent on two of four cases and failed the exact repair contract on the
+fourth. Future thresholds require additional reviewed attempts and a
+pre-declared task-level decision rule; this review makes no broader claim about
+the skill.
 
 ## Sources
 
-The local run IDs are `uplift-{skill,baseline}-{1,2,3}` for the five-task suite.
+The local run IDs are `uplift-skill-{1,2,3}` for this four-case skill-arm pilot.
 Raw traces and run directories are intentionally excluded from version control.
