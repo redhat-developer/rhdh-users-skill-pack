@@ -24,17 +24,17 @@
 
 ### Uplift
 
-- Five representative tasks, with three retained attempts for each skill and
+- Four representative tasks, with three retained attempts for each skill and
   baseline arm: confirmation gating, secret-safe integration, Nunjucks raw
-  block repair, diagnose-and-repair, and invalid-template repair.
+  block repair, and invalid-template repair.
 - Contract pass results for the completed skill arm were respectively: `3/3`,
-  `1/3`, `2/3`, `0/3`, `0/3`. Therefore skill `pass@3` was `1, 1, 1, 0, 0`
-  and skill `pass^3` was `1, 0, 0, 0, 0`. The expanded baseline comparison was
+  `1/3`, `2/3`, `0/3`. Therefore skill `pass@3` was `1, 1, 1, 0` and skill
+  `pass^3` was `1, 0, 0, 0`. The expanded baseline comparison was
   stopped before completion, so no new baseline delta is claimed.
-- The overall skill-arm contract pass rate was `6/15` (`0.40`).
+- The overall skill-arm contract pass rate was `6/12` (`0.50`).
 - Bounded conclusions: confirmation gating passed in this pilot; secret-safe and
   Nunjucks behavior remained variable; diagnose-and-repair and the integrated
-  invalid-template case did not match their exact reviewed artifacts. A future
+  invalid-template case did not match its exact reviewed artifact. A future
   repair contract should decide whether equivalent valid repairs are acceptable
   instead of requiring one exact serialization.
 - No uplift threshold is approved; the evidence is mixed or regressive.
