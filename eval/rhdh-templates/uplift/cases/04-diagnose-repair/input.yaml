@@ -1,4 +1,0 @@
-prompt: |
-  Diagnose and repair `fixture/invalid-template/template.yaml`. It must use the
-  RHDH v1beta3 API, declare the referenced `componentId` parameter, use unique
-  step ids, and finish with a clean local validation. Modify only template.yaml.

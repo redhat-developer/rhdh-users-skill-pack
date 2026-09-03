@@ -13,7 +13,8 @@ Add a scaffolder step to an existing template without rebuilding from scratch.
 
 ## Step 1: Identify action
 
-Ask user what the step should do. Map to a scaffolder action:
+Ask what the step should do only when the request is underspecified. Otherwise,
+map the requested behavior directly to a scaffolder action:
 
 | Intent | Typical action |
 |--------|----------------|
@@ -24,6 +25,23 @@ Ask user what the step should do. Map to a scaffolder action:
 | Run custom action | `custom:<action-name>` |
 
 Action IDs are camelCase. When unsure of installed actions, use the `list-actions` command to query the live instance.
+When the request already names the action and complete inputs, continue without an
+additional clarification round.
+
+## Surgical insertion (fully specified prompt)
+
+When the user names one `template.yaml` path, a step `id`, an `action`, and the
+step `input` fields, and says to make no other changes:
+
+1. Load `template-structure.md` and open only the named template file.
+2. Insert **only** the requested step. Reuse existing `parameters` entries; do
+   not add new form fields unless the user asked for them.
+3. Wire credential-sensitive inputs to existing parameters (for example
+   `repoUrl: ${{ parameters.repoUrl }}`). Never add `token`, `password`, `secret`,
+   or literal credential values to the step `input`.
+4. Do not edit skeleton files, README files, or other templates.
+5. Run `fix_gotchas.py` on the edited template only when the reference workflow
+   calls for it; otherwise stop after the single reviewed edit.
 
 ## Step 2: Choose position
 
@@ -47,6 +65,10 @@ Reference parameters and prior step outputs:
     title: New component ${{ parameters.componentId }}
     info: ${{ steps.publish.output.remoteUrl }}
 ```
+
+For publishing or other credential-sensitive actions, use an existing parameter or
+the platform's documented secret mechanism. Never add a literal token, password,
+or credential to `template.yaml`, its skeleton, or the step input.
 
 ## Step 4: Update output (if needed)
 

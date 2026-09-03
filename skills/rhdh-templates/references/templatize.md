@@ -73,7 +73,32 @@ Principles:
 - **Group parameters** — repo + owner + system belong in one form section.
 - **Match RHDH examples** — compare against [red-hat-developer-hub-software-templates](https://github.com/redhat-developer/red-hat-developer-hub-software-templates) patterns for similar stacks.
 
-Do not proceed until user confirms the parameter list.
+Write the candidate table to the proposal path requested by the user (for example
+`output/proposal.md`). Include candidate names, proposed mappings, files that
+remain static, and an explicit request for confirmation. Stop after writing that
+proposal. Do not modify source files, create a skeleton, or write `template.yaml`
+until the user explicitly confirms the parameter list.
+
+The table must cover every discovered project-identity literal, including names
+from package metadata and `catalog-info.yaml`. Use clear parameter names such as
+`serviceName` for a service identity, and include the source file for each mapping.
+
+#### Proposal-only requests
+
+When the user asks for analysis and a proposal artifact only (for example
+`output/proposal.md`) and says not to modify source files yet:
+
+1. Run `analyze.py --path <source-dir> --json` on the named source tree.
+2. Write **only** the proposal file the user named. Do not edit files under the
+   source tree, create `skeleton/`, or write `template.yaml`.
+3. Include at minimum in the proposal:
+   - a `serviceName` (or equivalent) mapping for the primary service identity
+     from `package.json` `name` and/or `catalog-info.yaml` `metadata.name`
+   - an `owner` mapping from `catalog-info.yaml` `spec.owner`
+   - which build files (for example `Dockerfile`) stay static vs parameterized
+   - an explicit confirmation request before any file edits
+
+Stop after the proposal is written.
 
 ---
 

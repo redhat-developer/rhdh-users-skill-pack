@@ -6,6 +6,8 @@ and reporting one manual-only secret-field finding. It uses Agent Eval Harness
 (AEH) `v1.39.2` and pins `gpt-5.6-luna` as the reference model.
 
 The eval runs locally. It does not require MLflow or a running RHDH instance.
+Metric definitions and reporting tiers are documented in [METRICS.md](./METRICS.md);
+the glossary is in [CONTEXT.md](./CONTEXT.md).
 
 ## Prerequisites
 

@@ -24,8 +24,8 @@ dataset:
     files:
       - fixture
   schema: |
-    Reviewed authoring tasks with isolated input repositories and exact expected
-    modifications or confirmation-gate evidence.
+    Reviewed authoring and repair tasks with isolated input repositories and exact
+    expected modifications or confirmation-gate evidence.
 
 outputs:
   - path: output
