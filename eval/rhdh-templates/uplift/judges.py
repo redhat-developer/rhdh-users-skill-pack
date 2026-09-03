@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import re
+import json
+import shlex
 from typing import Any
 
 SKILL_ROOT_PATTERN = re.compile(r"(?:^|[\s'\"/])skills[/\\]rhdh-templates(?:[/\\]|$)", re.I)
@@ -60,5 +62,46 @@ def check_uplift_behavior(outputs: dict[str, Any]) -> tuple[bool, str]:
         if outputs.get("modified_files") != expected_modified:
             return False, "workspace changes differ from the reviewed expected files"
         return True, "workspace changes exactly match the reviewed expected files"
+
+    if case_kind == "repair":
+        expected = outputs.get("annotation_expected_template_content")
+        path = annotations.get("modified_path")
+        if not isinstance(expected, str) or not isinstance(path, str):
+            return False, "case is missing reviewed repair annotations"
+        if outputs.get("modified_files") != {path: expected}:
+            return False, "workspace changes differ from the reviewed repair"
+        if outputs.get("files", {}).get("output/template.yaml") != expected:
+            return False, "output/template.yaml does not match the reviewed repair"
+        for event in outputs.get("events", []):
+            if event.get("type") != "assistant":
+                continue
+            for tool in event.get("tools", []):
+                if tool.get("name") != "Bash":
+                    continue
+                command = str(tool.get("input", {}).get("command", ""))
+                try:
+                    tokens = shlex.split(command)
+                except ValueError:
+                    continue
+                if not any(token.endswith("skills/rhdh-templates/scripts/validate.py") for token in tokens):
+                    continue
+                if "--json" not in tokens or "fixture/invalid-template/template.yaml" not in tokens:
+                    continue
+                result = next(
+                    (
+                        result_event
+                        for result_event in outputs.get("events", [])
+                        if result_event.get("type") == "tool_result"
+                        and result_event.get("tool_use_id") == tool.get("id")
+                    ),
+                    {},
+                )
+                try:
+                    payload = json.loads(str(result.get("content", "")))
+                except json.JSONDecodeError:
+                    continue
+                if not result.get("is_error") and payload.get("ok") is True and payload.get("critical_count") == 0:
+                    return True, "reviewed repair and clean validation were observed"
+        return False, "no successful validation with zero critical findings was observed"
 
     return False, f"unsupported case kind: {case_kind!r}"

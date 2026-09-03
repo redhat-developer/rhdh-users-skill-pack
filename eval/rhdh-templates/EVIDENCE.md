@@ -24,9 +24,13 @@
 
 ### Uplift
 
-- Four representative tasks, with three retained attempts for each skill and
+- Five representative tasks, with three retained attempts for each skill and
   baseline arm: confirmation gating, secret-safe integration, Nunjucks raw
-  block repair, and invalid-template repair.
+  block repair, diagnose-and-repair, and invalid-template repair.
+- The newly integrated `05-invalid-template-repair` case passed the skill arm in
+  all three attempts (`pass@3=1`, `pass^3=1`). The expanded baseline comparison
+  was not completed in this pilot, so no new baseline delta is claimed for this
+  case.
 - Contract pass results were respectively: skill `1/3`, `3/3`, `3/3`, `0/3`;
   baseline `3/3`, `3/3`, `3/3`, `0/3`. Thus `pass@3` was skill `1, 1, 1, 0`
   and baseline `1, 1, 1, 0`; `pass^3` was skill `0, 1, 1, 0` and baseline

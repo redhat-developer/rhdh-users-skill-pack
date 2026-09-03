@@ -1,0 +1,3 @@
+case_kind: repair
+modified_path: fixture/invalid-template/template.yaml
+expected_template: expected/template.yaml
