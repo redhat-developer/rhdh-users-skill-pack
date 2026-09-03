@@ -13,7 +13,8 @@ Add a scaffolder step to an existing template without rebuilding from scratch.
 
 ## Step 1: Identify action
 
-Ask user what the step should do. Map to a scaffolder action:
+Ask what the step should do only when the request is underspecified. Otherwise,
+map the requested behavior directly to a scaffolder action:
 
 | Intent | Typical action |
 |--------|----------------|
@@ -24,6 +25,8 @@ Ask user what the step should do. Map to a scaffolder action:
 | Run custom action | `custom:<action-name>` |
 
 Action IDs are camelCase. When unsure of installed actions, use the `list-actions` command to query the live instance.
+When the request already names the action and complete inputs, continue without an
+additional clarification round.
 
 ## Step 2: Choose position
 
@@ -47,6 +50,10 @@ Reference parameters and prior step outputs:
     title: New component ${{ parameters.componentId }}
     info: ${{ steps.publish.output.remoteUrl }}
 ```
+
+For publishing or other credential-sensitive actions, use an existing parameter or
+the platform's documented secret mechanism. Never add a literal token, password,
+or credential to `template.yaml`, its skeleton, or the step input.
 
 ## Step 4: Update output (if needed)
 

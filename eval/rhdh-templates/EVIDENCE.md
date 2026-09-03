@@ -27,8 +27,11 @@
 - Four representative tasks, with three retained attempts for each skill and
   baseline arm: confirmation gating, secret-safe integration, Nunjucks raw
   block repair, and invalid-template repair.
-- Correctness results were respectively: skill `2/3`, `0/3`, `3/3`, `0/3`;
-  baseline `3/3`, `3/3`, `3/3`, `0/3`.
+- Contract pass results were respectively: skill `2/3`, `0/3`, `3/3`, `0/3`;
+  baseline `3/3`, `3/3`, `3/3`, `0/3`. Thus `pass@3` was skill `1, 0, 1, 0`
+  and baseline `1, 1, 1, 0`; `pass^3` was skill `0, 0, 1, 0` and baseline
+  `1, 1, 1, 0`.
+- The corresponding per-case Δ `pass@3` values were `0, -1, 0, 0`.
 - Bounded conclusions: regression for confirmation gating and secret-safe
   integration, no effect for Nunjucks repair, and no effect for invalid-template
   repair because neither arm met the exact contract.
@@ -45,8 +48,8 @@
 - Results are model-, release-, prompt-, fixture-, and date-specific.
 - Local AEH artifacts are reproducible sources; this card is an aggregate
   summary, not a substitute for raw traces during investigation.
-- Efficiency observations are descriptive token/cache metrics only; no cost or
-  latency claim is made.
+- Efficiency guardrails (command count, loop detection, and tokens per turn) are
+  descriptive only; no cost or latency claim is made.
 - No commercial support entitlement, product-wide quality guarantee, or broad
   uplift claim follows from these evaluations.
 - MLflow storage is intentionally deferred; no MLflow database is required.

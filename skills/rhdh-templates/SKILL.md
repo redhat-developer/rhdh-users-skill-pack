@@ -34,6 +34,9 @@ Read `references/best-practices.md` when authoring or reviewing templates — it
 - **Interactive, not fully automatic.** Templatize proposes parameterization; the user confirms each literal-to-parameter mapping.
 - **Conservative parameterization.** Under-parameterize rather than expose every string — users can add parameters incrementally.
 - **First-try correctness.** Generated artifacts should pass local `validate` with zero critical findings before merge.
+- **Confirmation is a hard gate.** For `templatize`, write the candidate mapping to the requested proposal artifact and stop; never edit the source until the user confirms.
+- **Credentials stay out of templates.** For publishing steps, wire inputs to existing parameters or documented secret references; never invent, copy, or persist literal tokens, passwords, or credentials.
+- **Honor explicit task details.** When an authoring request already specifies the action, step id, position, and inputs, make that reviewed change directly; do not ask the user to restate details or add unrelated workflow steps.
 
 ## Script paths
 

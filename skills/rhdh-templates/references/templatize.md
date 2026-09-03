@@ -73,7 +73,11 @@ Principles:
 - **Group parameters** — repo + owner + system belong in one form section.
 - **Match RHDH examples** — compare against [red-hat-developer-hub-software-templates](https://github.com/redhat-developer/red-hat-developer-hub-software-templates) patterns for similar stacks.
 
-Do not proceed until user confirms the parameter list.
+Write the candidate table to the proposal path requested by the user (for example
+`output/proposal.md`). Include candidate names, proposed mappings, files that
+remain static, and an explicit request for confirmation. Stop after writing that
+proposal. Do not modify source files, create a skeleton, or write `template.yaml`
+until the user explicitly confirms the parameter list.
 
 ---
 
