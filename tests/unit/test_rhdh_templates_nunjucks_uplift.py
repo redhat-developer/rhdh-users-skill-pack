@@ -77,5 +77,9 @@ def test_nunjucks_uplift_runs_three_local_attempts_per_arm_with_case_comparison(
     assert "runs=3" in command
     assert "for arm in skill baseline; do" in command
     assert 'for index in $(seq 1 "${runs}"); do' in command
+    assert 'prefix="uplift-$(date -u +%Y%m%dT%H%M%SZ)"' in command
+    assert 'run_id="${prefix}-${arm}-${index}"' in command
+    assert "${prefix}-skill-${index}" in command
+    assert "${prefix}-baseline-${index}" in command
     assert "compare.py" in command
     assert "Observed comparison only" in command

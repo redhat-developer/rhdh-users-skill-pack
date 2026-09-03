@@ -24,18 +24,19 @@ fi
 cd "${REPO_ROOT}"
 export UV_CACHE_DIR="${UV_CACHE_DIR:-/tmp/rhdh-aeh-uv-cache}"
 export AGENT_EVAL_RUNS_DIR="${REPO_ROOT}/eval/runs/rhdh-templates-uplift"
+prefix="uplift-$(date -u +%Y%m%dT%H%M%SZ)"
 for arm in skill baseline; do
   config="${SCRIPT_DIR}/${arm}.eval.yaml"
   for index in $(seq 1 "${runs}"); do
-    run_id="uplift-${arm}-${index}"
+    run_id="${prefix}-${arm}-${index}"
     uv run --project "${aeh_checkout}" python "${SCRIPT_DIR}/run.py" --aeh-dir "${aeh_checkout}" --config "${config}" --model "${MODEL}" --run-id "${run_id}"
   done
 done
-comparison_dir="/tmp/rhdh-templates-uplift-comparison"
+comparison_dir="/tmp/rhdh-templates-uplift-comparison-${prefix}"
 comparison_input="$(mktemp -d /tmp/rhdh-templates-uplift-runs.XXXXXX)"
 for index in $(seq 1 "${runs}"); do
-  cp -a "${AGENT_EVAL_RUNS_DIR}/rhdh-templates/uplift-skill-${index}" "${comparison_input}/"
-  cp -a "${AGENT_EVAL_RUNS_DIR}/rhdh-templates-uplift-baseline/uplift-baseline-${index}" "${comparison_input}/"
+  cp -a "${AGENT_EVAL_RUNS_DIR}/rhdh-templates/${prefix}-skill-${index}" "${comparison_input}/"
+  cp -a "${AGENT_EVAL_RUNS_DIR}/rhdh-templates-uplift-baseline/${prefix}-baseline-${index}" "${comparison_input}/"
 done
 uv run --project "${aeh_checkout}" python "${aeh_checkout}/skills/eval-compare/scripts/compare.py" generate "${comparison_input}" --output "${comparison_dir}" --title "rhdh-templates uplift" --overview "Observed comparison only; no generalization beyond this reviewed case set."
 echo "Comparison: ${comparison_dir}"
