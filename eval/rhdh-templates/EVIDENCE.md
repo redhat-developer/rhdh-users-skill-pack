@@ -47,7 +47,7 @@
 
   ```bash
   ./eval/rhdh-templates/uplift/run-local.sh --runs 3
-  ./eval/rhdh-templates/repair-uplift/run-local.sh --runs 3
+  ./eval/rhdh-templates/uplift/run-local.sh --runs 3
   ```
 
 ## Limitations and scope

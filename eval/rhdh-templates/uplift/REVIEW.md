@@ -27,7 +27,5 @@ decision rule; this review makes no broader claim about the skill.
 
 ## Sources
 
-The local run IDs are `uplift-{skill,baseline}-{1,2,3}` for the four-task
-suite and `repair-uplift-{skill,baseline}-{1,2,3}` for the invalid-template
-repair rerun. Raw traces and run directories are intentionally excluded from
-version control.
+The local run IDs are `uplift-{skill,baseline}-{1,2,3}` for the five-task suite.
+Raw traces and run directories are intentionally excluded from version control.
