@@ -27,27 +27,20 @@
 - Five representative tasks, with three retained attempts for each skill and
   baseline arm: confirmation gating, secret-safe integration, Nunjucks raw
   block repair, diagnose-and-repair, and invalid-template repair.
-- The newly integrated `05-invalid-template-repair` case passed the skill arm in
-  all three attempts (`pass@3=1`, `pass^3=1`). The expanded baseline comparison
-  was not completed in this pilot, so no new baseline delta is claimed for this
-  case.
-- Contract pass results were respectively: skill `1/3`, `3/3`, `3/3`, `0/3`;
-  baseline `3/3`, `3/3`, `3/3`, `0/3`. Thus `pass@3` was skill `1, 1, 1, 0`
-  and baseline `1, 1, 1, 0`; `pass^3` was skill `0, 1, 1, 0` and baseline
-  `1, 1, 1, 0`.
-- The corresponding per-case Δ `pass@3` values were `0, 0, 0, 0`.
-- The overall contract pass rates were skill `6/12` (`0.50`) and baseline
-  `9/12` (`0.75`). Baseline isolation passed `11/12` (`0.917`).
-- Bounded conclusions: secret-safe integration now meets the contract in all
-  three skill attempts; confirmation gating remains flaky because two proposals
-  omitted the reviewed `serviceName` mapping; Nunjucks repair remains `3/3` for
-  both arms; the integrated invalid-template repair case passed the skill arm
-  `3/3` (the expanded baseline comparison was not completed).
+- Contract pass results for the completed skill arm were respectively: `3/3`,
+  `1/3`, `2/3`, `0/3`, `0/3`. Therefore skill `pass@3` was `1, 1, 1, 0, 0`
+  and skill `pass^3` was `1, 0, 0, 0, 0`. The expanded baseline comparison was
+  stopped before completion, so no new baseline delta is claimed.
+- The overall skill-arm contract pass rate was `6/15` (`0.40`).
+- Bounded conclusions: confirmation gating passed in this pilot; secret-safe and
+  Nunjucks behavior remained variable; diagnose-and-repair and the integrated
+  invalid-template case did not match their exact reviewed artifacts. A future
+  repair contract should decide whether equivalent valid repairs are acceptable
+  instead of requiring one exact serialization.
 - No uplift threshold is approved; the evidence is mixed or regressive.
 - Reproduce the local comparison with:
 
   ```bash
-  ./eval/rhdh-templates/uplift/run-local.sh --runs 3
   ./eval/rhdh-templates/uplift/run-local.sh --runs 3
   ```
 

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import re
 import json
+import re
 import shlex
 from typing import Any
 
@@ -83,7 +83,9 @@ def check_uplift_behavior(outputs: dict[str, Any]) -> tuple[bool, str]:
                     tokens = shlex.split(command)
                 except ValueError:
                     continue
-                if not any(token.endswith("skills/rhdh-templates/scripts/validate.py") for token in tokens):
+                if not any(
+                    token.endswith("skills/rhdh-templates/scripts/validate.py") for token in tokens
+                ):
                     continue
                 if "--json" not in tokens or "fixture/invalid-template/template.yaml" not in tokens:
                     continue
@@ -100,7 +102,11 @@ def check_uplift_behavior(outputs: dict[str, Any]) -> tuple[bool, str]:
                     payload = json.loads(str(result.get("content", "")))
                 except json.JSONDecodeError:
                     continue
-                if not result.get("is_error") and payload.get("ok") is True and payload.get("critical_count") == 0:
+                if (
+                    not result.get("is_error")
+                    and payload.get("ok") is True
+                    and payload.get("critical_count") == 0
+                ):
                     return True, "reviewed repair and clean validation were observed"
         return False, "no successful validation with zero critical findings was observed"
 

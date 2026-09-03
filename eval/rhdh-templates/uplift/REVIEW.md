@@ -1,22 +1,23 @@
 # Uplift evidence review
 
-This review covers three retained local AEH attempts per arm for the four
-representative tasks. Run directories remain local and are not committed.
+This review covers three retained local AEH attempts for the five-case skill
+arm. The expanded baseline comparison was not completed. Run directories remain
+local and are not committed.
 The review separates task correctness (the deterministic task judge) from
 workflow adherence (the baseline skill-isolation judge).
 
 | Task | Skill correctness | Baseline correctness | Skill variance | Baseline variance | Bounded conclusion |
 | --- | --- | --- | ---: | ---: | --- |
-| Confirmation gating | 2/3 | 3/3 | 0.222 | 0.000 | Regression in this case; baseline was more consistent. |
-| Secret-safe integration | 0/3 | 3/3 | 0.000 | 0.000 | Regression in this case; baseline completed the exact edit. |
-| Nunjucks raw block | 3/3 | 3/3 | 0.000 | 0.000 | No effect in this case. |
-| Invalid-template repair | 0/3 | 0/3 | 0.000 | 0.000 | No effect; neither arm satisfied the exact repair contract. |
+| Confirmation gating | 3/3 | not run | 0.000 | — | Skill passed the reviewed contract in this pilot. |
+| Secret-safe integration | 1/3 | not run | 0.222 | — | Skill was inconsistent in this pilot. |
+| Nunjucks raw block | 2/3 | not run | 0.222 | — | Skill was mostly successful in this pilot. |
+| Diagnose and repair | 0/3 | not run | 0.000 | — | Skill did not satisfy the exact reviewed artifact contract. |
+| Invalid-template repair | 0/3 | not run | 0.000 | — | Skill repaired structure but did not match the exact reviewed artifact. |
 
-All nine baseline attempts passed skill-isolation checks. Available efficiency
-metrics were output tokens per turn and cache-hit rate. Mean output tokens per
-turn were 2,714.5 for the skill arm and 1,545.0 for the baseline arm across
-the four-task uplift suite; these are descriptive only and are not treated as
-an efficiency claim because the attempts were not paired by latency or cost.
+Baseline results for the expanded five-case suite are unavailable because that
+pilot was stopped after the skill arm. Efficiency metrics from the completed
+skill attempts were output tokens per turn of 3,005.2, 2,869.0, and 2,703.4;
+these are descriptive only.
 
 ## Threshold decision
 

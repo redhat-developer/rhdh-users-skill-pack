@@ -5,7 +5,6 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-
 _SPEC = importlib.util.spec_from_file_location(
     "uplift_metrics",
     Path(__file__).parents[2] / "eval/rhdh-templates/uplift/metrics.py",
