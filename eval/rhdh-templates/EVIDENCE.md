@@ -28,20 +28,17 @@
   confirmation gating (`01-templatize-confirmation`), secret-safe integration
   (`02-secret-safe-step`), Nunjucks raw block repair (`03-nunjucks-raw`), and
   invalid-template repair (`05-invalid-template-repair`).
-- The expanded baseline comparison was stopped before completion, so no new
-  baseline delta is claimed for this pilot.
-- Contract pass results for the skill arm were respectively: `3/3`, `1/3`,
-  `2/3`, `0/3`. Therefore skill `pass@3` was `1, 1, 1, 0` and skill `pass^3`
-  was `1, 0, 0, 0`. The overall skill-arm contract pass rate was `6/12`
-  (`0.50`).
-- Bounded conclusions: confirmation gating passed in this pilot; secret-safe and
-  Nunjucks behavior remained variable; invalid-template repair did not match its
-  exact reviewed artifact. A future repair contract should decide whether
-  equivalent valid repairs are acceptable instead of requiring one exact
-  serialization.
-- Skill documentation was hardened after this pilot to address confirmation,
-  credential-safety, and surgical `add-step` behavior. Re-run the uplift suite
-  to measure post-fix skill-arm results.
+- Contract pass results, in case order, were skill `2/3`, `3/3`, `2/3`, `0/3`
+  and baseline `3/3`, `2/3`, `3/3`, `0/3`. Skill `pass@3` was `1, 1, 1, 0`
+  and `pass^3` was `0, 1, 0, 0`; baseline `pass@3` was `1, 1, 1, 0` and
+  `pass^3` was `1, 0, 1, 0`.
+- The corresponding per-case Δ `pass@3` values were `0, 0, 0, 0`. Overall
+  contract pass rates were skill `7/12` (`0.583`) and baseline `8/12`
+  (`0.667`). Baseline isolation passed `12/12` (`1.000`).
+- Bounded conclusions: secret-safe integration was `1/3` for skill and `2/3`
+  for baseline; invalid-template repair was `0/3` for both; Nunjucks repair was
+  `2/3` for skill versus `3/3` for baseline; confirmation gating was `2/3` for
+  both arms. The exact repair contract remains stricter than structural validity.
 - No uplift threshold is approved; the evidence is mixed or regressive.
 - Reproduce locally with:
 
@@ -54,10 +51,10 @@
 - Results are model-, release-, prompt-, fixture-, and date-specific.
 - Local AEH artifacts are reproducible sources; this card is an aggregate
   summary, not a substitute for raw traces during investigation.
-- Efficiency observations from the completed skill attempts were descriptive:
-  output tokens per turn of `3,005.2`, `2,869.0`, and `2,703.4` across the
-  three uplift runs. Command count and loop detection remain secondary
-  guardrails; no cost or latency claim is made.
+- Efficiency observations were descriptive: skill output tokens/turn were
+  `3062.0`, `2617.25`, `2626.5` (mean `2768.6`); baseline values were `1396.0`,
+  `1437.5`, `1652.5` (mean `1495.3`). Command count and loop detection remain
+  secondary guardrails; no cost or latency claim is made.
 - No commercial support entitlement, product-wide quality guarantee, or broad
   uplift claim follows from these evaluations.
 - MLflow storage is intentionally deferred; no MLflow database is required.
