@@ -41,7 +41,8 @@
 - Bounded conclusions: secret-safe integration now meets the contract in all
   three skill attempts; confirmation gating remains flaky because two proposals
   omitted the reviewed `serviceName` mapping; Nunjucks repair remains `3/3` for
-  both arms; invalid-template repair remains `0/3` for both arms.
+  both arms; the integrated invalid-template repair case passed the skill arm
+  `3/3` (the expanded baseline comparison was not completed).
 - No uplift threshold is approved; the evidence is mixed or regressive.
 - Reproduce the local comparison with:
 
