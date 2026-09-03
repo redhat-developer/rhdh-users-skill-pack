@@ -24,7 +24,7 @@
 
 ### Uplift
 
-- Four representative tasks with three retained skill-arm attempts each:
+- Four representative tasks with three retained attempts per arm:
   confirmation gating (`01-templatize-confirmation`), secret-safe integration
   (`02-secret-safe-step`), Nunjucks raw block repair (`03-nunjucks-raw`), and
   invalid-template repair (`05-invalid-template-repair`).
@@ -35,10 +35,10 @@
 - The corresponding per-case Δ `pass@3` values were `0, 0, 0, 0`. Overall
   contract pass rates were skill `7/12` (`0.583`) and baseline `8/12`
   (`0.667`). Baseline isolation passed `12/12` (`1.000`).
-- Bounded conclusions: secret-safe integration was `1/3` for skill and `2/3`
-  for baseline; invalid-template repair was `0/3` for both; Nunjucks repair was
-  `2/3` for skill versus `3/3` for baseline; confirmation gating was `2/3` for
-  both arms. The exact repair contract remains stricter than structural validity.
+- Bounded conclusions: confirmation gating was `2/3` for both arms; secret-safe
+  integration was `3/3` for skill and `2/3` for baseline; Nunjucks repair was
+  `2/3` for skill versus `3/3` for baseline; invalid-template repair was `0/3`
+  for both. The exact repair contract remains stricter than structural validity.
 - No uplift threshold is approved; the evidence is mixed or regressive.
 - Reproduce locally with:
 
