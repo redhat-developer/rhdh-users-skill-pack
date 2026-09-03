@@ -1,6 +1,6 @@
 # `rhdh-templates` behavioral-eval evidence card
 
-**Run date:** 2026-09-02  
+**Run date:** 2026-09-03  
 **Model:** `gpt-5.6-luna`  
 **AEH release:** `v1.39.2`  
 **Storage:** local AEH run directories only; raw traces are intentionally not committed.
@@ -27,14 +27,17 @@
 - Four representative tasks, with three retained attempts for each skill and
   baseline arm: confirmation gating, secret-safe integration, Nunjucks raw
   block repair, and invalid-template repair.
-- Contract pass results were respectively: skill `2/3`, `0/3`, `3/3`, `0/3`;
-  baseline `3/3`, `3/3`, `3/3`, `0/3`. Thus `pass@3` was skill `1, 0, 1, 0`
-  and baseline `1, 1, 1, 0`; `pass^3` was skill `0, 0, 1, 0` and baseline
+- Contract pass results were respectively: skill `1/3`, `3/3`, `3/3`, `0/3`;
+  baseline `3/3`, `3/3`, `3/3`, `0/3`. Thus `pass@3` was skill `1, 1, 1, 0`
+  and baseline `1, 1, 1, 0`; `pass^3` was skill `0, 1, 1, 0` and baseline
   `1, 1, 1, 0`.
-- The corresponding per-case Δ `pass@3` values were `0, -1, 0, 0`.
-- Bounded conclusions: regression for confirmation gating and secret-safe
-  integration, no effect for Nunjucks repair, and no effect for invalid-template
-  repair because neither arm met the exact contract.
+- The corresponding per-case Δ `pass@3` values were `0, 0, 0, 0`.
+- The overall contract pass rates were skill `6/12` (`0.50`) and baseline
+  `9/12` (`0.75`). Baseline isolation passed `11/12` (`0.917`).
+- Bounded conclusions: secret-safe integration now meets the contract in all
+  three skill attempts; confirmation gating remains flaky because two proposals
+  omitted the reviewed `serviceName` mapping; Nunjucks repair remains `3/3` for
+  both arms; invalid-template repair remains `0/3` for both arms.
 - No uplift threshold is approved; the evidence is mixed or regressive.
 - Reproduce the local comparison with:
 
@@ -48,8 +51,10 @@
 - Results are model-, release-, prompt-, fixture-, and date-specific.
 - Local AEH artifacts are reproducible sources; this card is an aggregate
   summary, not a substitute for raw traces during investigation.
-- Efficiency guardrails (command count, loop detection, and tokens per turn) are
-  descriptive only; no cost or latency claim is made.
+- Efficiency observations were descriptive: skill output tokens/turn were
+  `2405.0`, `2373.5`, `2605.5`; baseline values were `1406.8`, `1380.0`,
+  `1432.2`. Command count and loop detection remain secondary guardrails; no cost
+  or latency claim is made.
 - No commercial support entitlement, product-wide quality guarantee, or broad
   uplift claim follows from these evaluations.
 - MLflow storage is intentionally deferred; no MLflow database is required.

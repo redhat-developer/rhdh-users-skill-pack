@@ -79,6 +79,10 @@ remain static, and an explicit request for confirmation. Stop after writing that
 proposal. Do not modify source files, create a skeleton, or write `template.yaml`
 until the user explicitly confirms the parameter list.
 
+The table must cover every discovered project-identity literal, including names
+from package metadata and `catalog-info.yaml`. Use clear parameter names such as
+`serviceName` for a service identity, and include the source file for each mapping.
+
 ---
 
 ### Phase 3: Scaffold
