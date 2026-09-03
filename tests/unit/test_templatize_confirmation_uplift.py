@@ -8,7 +8,9 @@ from pathlib import Path
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-CASE_ROOT = REPO_ROOT / "eval" / "rhdh-templates" / "uplift" / "cases" / "01-templatize-confirmation"
+CASE_ROOT = (
+    REPO_ROOT / "eval" / "rhdh-templates" / "uplift" / "cases" / "01-templatize-confirmation"
+)
 
 
 def load_judges():
@@ -42,7 +44,10 @@ def test_confirmation_case_requires_service_name_and_no_source_edits() -> None:
 
     assert judges.check_uplift_behavior(outputs)[0]
 
-    missing_service = {**outputs, "files": {"output/proposal.md": proposal.replace("serviceName", "appId")}}
+    missing_service = {
+        **outputs,
+        "files": {"output/proposal.md": proposal.replace("serviceName", "appId")},
+    }
     assert not judges.check_uplift_behavior(missing_service)[0]
 
     edited_source = {**outputs, "modified_files": {"fixture/service/package.json": "{}\n"}}
